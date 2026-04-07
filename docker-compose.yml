@@ -1,0 +1,12 @@
+services:
+  pharmverify:
+    build: .
+    container_name: pharmverify
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.25"

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:dailymed.nlm.nih.gov)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
