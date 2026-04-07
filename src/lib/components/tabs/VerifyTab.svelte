@@ -1,14 +1,16 @@
 <script>
-  import { difficulty } from '$lib/stores/app.js';
+  import { difficulty, reviewMode } from '$lib/stores/app.js';
   import { recordAttempt } from '$lib/stores/metrics.js';
   let { order, patient, toast, onVerify } = $props();
 
   function track(action, isCorrect, grade) {
+    if ($reviewMode) return;
     recordAttempt({
       orderId: order.id, orderDbId: order.orderId, patientId: order.patientId,
       drugName: order.drugName, difficulty: $difficulty,
       actionTaken: action, correctAction: order.teaching?.correctAction || action,
-      isCorrect, grade: grade || null, rejectReasonsScore: null
+      isCorrect, grade: grade || null, rejectReasonsScore: null,
+      orderSnapshot: order, patientSnapshot: patient
     });
   }
 
@@ -68,7 +70,7 @@
   function handleAction(action) {
     const teaching = order.teaching;
     if (!teaching) {
-      if (action === 'verify') { toast(`Order ${order.orderId} verified \u2713`); setTimeout(onVerify, 600); }
+      if (action === 'verify') { toast(`Order ${order.orderId} verified \u2713`); if (!$reviewMode) setTimeout(onVerify, 600); }
       else if (action === 'reject') toast('Order rejected', 'er');
       else if (action === 'message') toast('Message sent to prescriber', 'inf');
       return;
@@ -216,7 +218,7 @@
     const wasCorrect = feedback?.correct;
     feedback = null;
     rejectResult = null;
-    if (wasCorrect) {
+    if (wasCorrect && !$reviewMode) {
       setTimeout(onVerify, 200);
     }
   }

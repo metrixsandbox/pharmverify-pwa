@@ -45,7 +45,7 @@ export function startNewSession(difficulty) {
   });
 }
 
-export function recordAttempt({ orderId, orderDbId, patientId, drugName, difficulty, actionTaken, correctAction, isCorrect, grade, rejectReasonsScore }) {
+export function recordAttempt({ orderId, orderDbId, patientId, drugName, difficulty, actionTaken, correctAction, isCorrect, grade, rejectReasonsScore, orderSnapshot, patientSnapshot }) {
   const now = Date.now();
   const sessionId = ensureSession(difficulty);
   const cat = CATEGORY_MAP[patientId] || { key: 'other', label: 'Other' };
@@ -60,7 +60,9 @@ export function recordAttempt({ orderId, orderDbId, patientId, drugName, difficu
     grade: grade || null,
     rejectReasonsScore: rejectReasonsScore || null,
     timestamp: now,
-    sessionId
+    sessionId,
+    orderSnapshot: orderSnapshot || null,
+    patientSnapshot: patientSnapshot || null
   };
 
   attempts.update(a => {

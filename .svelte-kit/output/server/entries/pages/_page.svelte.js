@@ -1100,8 +1100,9 @@ function loadCases() {
 const _saved = loadCases();
 const patients = writable(_saved ? _saved.patients : { ...DEMO_PATIENTS });
 const orders = writable(_saved ? _saved.orders : [...DEMO_ORDERS]);
-const view = writable("queue");
+const view = writable("home");
 const active = writable(null);
+const reviewMode = writable(false);
 const showUpload = writable(false);
 const difficulty = writable("default");
 const theme = writable(
@@ -1209,6 +1210,8 @@ function Sidebar($$renderer, $$props) {
     var $$store_subs;
     let initials = derived$1(() => store_get($$store_subs ??= {}, "$user", user) ? store_get($$store_subs ??= {}, "$user", user).name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2) : "");
     $$renderer2.push(`<div class="sb" data-tutorial="sidebar"><div class="sb-logo">Rx</div> <button${attr_class("sb-btn", void 0, {
+      "act": store_get($$store_subs ??= {}, "$view", view) === "home"
+    })}>🏠<span class="tip">Home</span></button> <button${attr_class("sb-btn", void 0, {
       "act": store_get($$store_subs ??= {}, "$view", view) === "queue"
     })}>☰<span class="tip">Work Queue</span> `);
     if (store_get($$store_subs ??= {}, "$orders", orders).length > 0) {
@@ -1234,6 +1237,64 @@ function Sidebar($$renderer, $$props) {
       $$renderer2.push("<!--[-1-->");
     }
     $$renderer2.push(`<!--]--></button> <div style="flex:1"></div> <button class="sb-btn">${escape_html(store_get($$store_subs ??= {}, "$theme", theme) === "dark" ? "☀" : "🌙")}<span class="tip">${escape_html(store_get($$store_subs ??= {}, "$theme", theme) === "dark" ? "Light Mode" : "Dark Mode")}</span></button> <button class="sb-btn">⬆<span class="tip">Import Cases</span></button> <div class="sb-user"><div class="sb-avatar">${escape_html(initials())}</div> <span class="tip" style="bottom:auto;top:auto;left:52px">${escape_html(store_get($$store_subs ??= {}, "$user", user)?.name)}</span></div> <button class="sb-btn sb-logout">⏻<span class="tip">Sign Out</span></button></div>`);
+    if ($$store_subs) unsubscribe_stores($$store_subs);
+  });
+}
+function Home($$renderer, $$props) {
+  $$renderer.component(($$renderer2) => {
+    var $$store_subs;
+    const LEVELS = ["easy", "medium", "hard"];
+    let pickedDisease = null;
+    let firstName = derived$1(() => store_get($$store_subs ??= {}, "$user", user)?.name?.split(" ")[0] || "there");
+    let hasResume = derived$1(() => store_get($$store_subs ??= {}, "$orders", orders).length > 0);
+    $$renderer2.push(`<div class="hm"><div class="hm-hd"><div><div class="hm-hi">Welcome back, ${escape_html(firstName())}</div> <div class="hm-sub">Pick a disease, or resume where you left off.</div></div> `);
+    if (hasResume()) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<button class="hm-resume"><span class="hm-resume-l">Resume queue</span> <span class="hm-resume-s">${escape_html(store_get($$store_subs ??= {}, "$orders", orders).length)} order${escape_html(store_get($$store_subs ??= {}, "$orders", orders).length === 1 ? "" : "s")} pending →</span></button>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--></div> <div class="hm-stats"><div class="hm-stat"><div class="hm-stat-n">${escape_html(store_get($$store_subs ??= {}, "$totalCompleted", totalCompleted))}</div> <div class="hm-stat-l">Cases completed</div></div> <div class="hm-stat"><div class="hm-stat-n">${escape_html(store_get($$store_subs ??= {}, "$overallAccuracy", overallAccuracy))}<span class="hm-stat-u">%</span></div> <div class="hm-stat-l">Overall accuracy</div></div> <div class="hm-stat"><div class="hm-stat-n">${escape_html(store_get($$store_subs ??= {}, "$currentStreak", currentStreak))}</div> <div class="hm-stat-l">Current streak</div></div> <div class="hm-stat"><div class="hm-stat-n">${escape_html(store_get($$store_subs ??= {}, "$attempts", attempts).length)}</div> <div class="hm-stat-l">Total attempts</div></div></div> <div class="hm-sect-hd"><h2>Practice by disease</h2> <span class="hm-sect-sub">Choose a condition, then pick your difficulty.</span></div> <div class="hm-grid"><!--[-->`);
+    const each_array = ensure_array_like(DISEASES);
+    for (let $$index_1 = 0, $$length = each_array.length; $$index_1 < $$length; $$index_1++) {
+      let d = each_array[$$index_1];
+      const built = !!DISEASE_CASES[d.id];
+      $$renderer2.push(`<div${attr_class("hm-tile", void 0, { "dim": !built, "open": pickedDisease === d.id })}><button class="hm-tile-main"${attr("disabled", !built, true)}><div class="hm-tile-ic">${escape_html(d.icon)}</div> <div class="hm-tile-name">${escape_html(d.label)}</div> <div class="hm-tile-desc">${escape_html(d.desc)}</div> `);
+      if (!built) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="hm-tile-soon">Coming soon</div>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--></button> `);
+      if (built && pickedDisease === d.id) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="hm-tile-lvls"><!--[-->`);
+        const each_array_1 = ensure_array_like(LEVELS);
+        for (let $$index = 0, $$length2 = each_array_1.length; $$index < $$length2; $$index++) {
+          let l = each_array_1[$$index];
+          $$renderer2.push(`<button${attr_class(`hm-lvl hm-lvl-${stringify(l)}`)}>${escape_html(l[0].toUpperCase() + l.slice(1))}</button>`);
+        }
+        $$renderer2.push(`<!--]--></div>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--></div>`);
+    }
+    $$renderer2.push(`<!--]--></div> `);
+    if (store_get($$store_subs ??= {}, "$recentAttempts", recentAttempts).length > 0) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="hm-sect-hd"><h2>Recent activity</h2></div> <div class="hm-recent"><!--[-->`);
+      const each_array_2 = ensure_array_like(store_get($$store_subs ??= {}, "$recentAttempts", recentAttempts).slice(0, 6));
+      for (let $$index_2 = 0, $$length = each_array_2.length; $$index_2 < $$length; $$index_2++) {
+        let a = each_array_2[$$index_2];
+        $$renderer2.push(`<button class="hm-rec"${attr("disabled", !a.orderSnapshot, true)}${attr("title", a.orderSnapshot ? "Review this order (will not affect stats)" : "Review unavailable for older attempts")}><span${attr_class("hm-rec-mark", void 0, { "ok": a.isCorrect, "bad": !a.isCorrect })}>${escape_html(a.isCorrect ? "✓" : "✕")}</span> <span class="hm-rec-drug">${escape_html(a.drugName)}</span> <span class="hm-rec-act">${escape_html(a.actionTaken)}</span> <span class="hm-rec-cat">${escape_html(a.categoryLabel)}</span></button>`);
+      }
+      $$renderer2.push(`<!--]--></div>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> <div class="hm-jump"><button class="btn bv">Open verification queue →</button></div></div>`);
     if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
@@ -1498,7 +1559,14 @@ function ChartView($$renderer, $$props) {
     let patient = derived$1(() => store_get($$store_subs ??= {}, "$active", active) ? store_get($$store_subs ??= {}, "$patients", patients)[store_get($$store_subs ??= {}, "$active", active).patientId] : null);
     if (order() && patient()) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<div class="ch"><div class="cban"><button class="bk">←</button> <div><div class="nm">${escape_html(patient().name)}</div> <div class="det"><span><span class="l">MRN</span>${escape_html(patient().mrn)}</span> <span><span class="l">Age</span>${escape_html(patient().age)}</span> <span><span class="l">Wt</span>${escape_html(patient().weight)}</span> <span><span class="l">Room</span>${escape_html(patient().room)}</span> <span><span class="l">Admit</span>${escape_html(patient().admitDate)}</span> <span><span class="l">Attending</span>${escape_html(patient().attending)}</span></div></div> <div class="cbr"><!--[-->`);
+      $$renderer2.push(`<div class="ch">`);
+      if (store_get($$store_subs ??= {}, "$reviewMode", reviewMode)) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="rev-banner">👁 Review mode — this attempt will not affect your stats</div>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> <div class="cban"><button class="bk">←</button> <div><div class="nm">${escape_html(patient().name)}</div> <div class="det"><span><span class="l">MRN</span>${escape_html(patient().mrn)}</span> <span><span class="l">Age</span>${escape_html(patient().age)}</span> <span><span class="l">Wt</span>${escape_html(patient().weight)}</span> <span><span class="l">Room</span>${escape_html(patient().room)}</span> <span><span class="l">Admit</span>${escape_html(patient().admitDate)}</span> <span><span class="l">Attending</span>${escape_html(patient().attending)}</span></div></div> <div class="cbr"><!--[-->`);
       const each_array = ensure_array_like(patient().allergies || []);
       for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
         let a = each_array[$$index];
@@ -1832,14 +1900,17 @@ function _page($$renderer, $$props) {
       $$renderer2.push(`<div class="app">`);
       Sidebar($$renderer2);
       $$renderer2.push(`<!----> <div class="main">`);
-      if (store_get($$store_subs ??= {}, "$view", view) === "queue") {
+      if (store_get($$store_subs ??= {}, "$view", view) === "home") {
         $$renderer2.push("<!--[0-->");
+        Home($$renderer2);
+      } else if (store_get($$store_subs ??= {}, "$view", view) === "queue") {
+        $$renderer2.push("<!--[1-->");
         Queue($$renderer2);
       } else if (store_get($$store_subs ??= {}, "$view", view) === "chart") {
-        $$renderer2.push("<!--[1-->");
+        $$renderer2.push("<!--[2-->");
         ChartView($$renderer2);
       } else if (store_get($$store_subs ??= {}, "$view", view) === "metrics") {
-        $$renderer2.push("<!--[2-->");
+        $$renderer2.push("<!--[3-->");
         MetricsView($$renderer2);
       } else {
         $$renderer2.push("<!--[-1-->");

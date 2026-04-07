@@ -1,5 +1,5 @@
 <script>
-  import { active, patients, goBack, verifyOrder } from '$lib/stores/app.js';
+  import { active, patients, goBack, verifyOrder, reviewMode } from '$lib/stores/app.js';
   import VerifyTab from './tabs/VerifyTab.svelte';
   import HpTab from './tabs/HpTab.svelte';
   import NotesTab from './tabs/NotesTab.svelte';
@@ -33,6 +33,9 @@
 
 {#if order && patient}
   <div class="ch">
+    {#if $reviewMode}
+      <div class="rev-banner">&#x1F441; Review mode &mdash; this attempt will not affect your stats</div>
+    {/if}
     <div class="cban">
       <button class="bk" onclick={goBack}>&larr;</button>
       <div>

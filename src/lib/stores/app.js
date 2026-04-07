@@ -25,8 +25,9 @@ function saveCases(p, o) {
 const _saved = loadCases();
 export const patients = writable(_saved ? _saved.patients : { ...DEMO_PATIENTS });
 export const orders = writable(_saved ? _saved.orders : [...DEMO_ORDERS]);
-export const view = writable('queue');
+export const view = writable('home');
 export const active = writable(null);
+export const reviewMode = writable(false);
 export const showUpload = writable(false);
 export const difficulty = writable('default');
 export const theme = writable(
@@ -36,8 +37,8 @@ export const user = writable(
   typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('pv-user') || 'null') : null
 );
 
-export function createAccount(name, email) {
-  const u = { name, email, createdAt: new Date().toISOString() };
+export function createAccount(name, email, role = 'student') {
+  const u = { name, email, role, createdAt: new Date().toISOString() };
   localStorage.setItem('pv-user', JSON.stringify(u));
   user.set(u);
 }
@@ -51,12 +52,30 @@ export const patientCount = derived(patients, $patients => Object.keys($patients
 export const orderCount = derived(orders, $orders => $orders.length);
 
 export function selectOrder(order) {
+  reviewMode.set(false);
+  active.set(order);
+  view.set('chart');
+}
+
+export function reviewOrder(order, patientSnapshot) {
+  reviewMode.set(true);
+  if (patientSnapshot) {
+    patients.update(p => p[order.patientId] ? p : { ...p, [order.patientId]: patientSnapshot });
+  }
   active.set(order);
   view.set('chart');
 }
 
 export function goBack() {
-  view.set('queue');
+  let isReview;
+  reviewMode.subscribe(v => isReview = v)();
+  reviewMode.set(false);
+  view.set(isReview ? 'home' : 'queue');
+  active.set(null);
+}
+
+export function goHome() {
+  view.set('home');
   active.set(null);
 }
 

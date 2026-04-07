@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { view, showUpload, theme, user } from '$lib/stores/app.js';
   import Sidebar from '$lib/components/Sidebar.svelte';
+  import Home from '$lib/components/Home.svelte';
   import Queue from '$lib/components/Queue.svelte';
   import ChartView from '$lib/components/ChartView.svelte';
   import UploadModal from '$lib/components/UploadModal.svelte';
@@ -35,7 +36,9 @@
   <div class="app">
     <Sidebar />
     <div class="main">
-      {#if $view === 'queue'}
+      {#if $view === 'home'}
+        <Home />
+      {:else if $view === 'queue'}
         <Queue />
       {:else if $view === 'chart'}
         <ChartView />

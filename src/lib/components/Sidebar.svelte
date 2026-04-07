@@ -17,6 +17,9 @@
 
 <div class="sb" data-tutorial="sidebar">
   <div class="sb-logo">Rx</div>
+  <button class="sb-btn" class:act={$view === 'home'} onclick={() => view.set('home')}>
+    &#x1F3E0;<span class="tip">Home</span>
+  </button>
   <button class="sb-btn" class:act={$view === 'queue'} onclick={goBack}>
     &#x2630;<span class="tip">Work Queue</span>
     {#if $orders.length > 0}<span class="bdg">{$orders.length}</span>{/if}
