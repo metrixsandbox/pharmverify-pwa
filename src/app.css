@@ -384,6 +384,13 @@ body.edit-mode-on::before{content:'';position:fixed;inset:0;pointer-events:none;
 .lp-mock-m{background:rgba(91,141,239,.12);color:#5b8def;border-color:rgba(91,141,239,.4)}
 
 .lp-how{padding:180px 40px 80px;max-width:1200px;margin:0 auto;text-align:center}
+.lp-shots{padding:120px 40px 40px;max-width:1200px;margin:0 auto;text-align:center}
+.lp-shot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:32px}
+.lp-shot{margin:0;background:var(--c2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.18);transition:transform .35s ease,box-shadow .35s ease}
+.lp-shot:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.lp-shot img{display:block;width:100%;height:auto}
+.lp-shot figcaption{padding:12px 16px;font-size:13.5px;color:var(--t3);text-align:left;border-top:1px solid var(--bd)}
+@media (max-width:760px){.lp-shot-grid{grid-template-columns:1fr}.lp-shots{padding:80px 20px 20px}}
 .lp-h2{font-size:36px;font-weight:800;margin:0 0 12px;letter-spacing:-.5px}
 .lp-h2-sub{font-size:16px;color:var(--t2);margin:0 0 40px}
 .lp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}

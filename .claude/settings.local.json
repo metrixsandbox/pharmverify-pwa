@@ -6,7 +6,12 @@
       "Bash(npx vite:*)",
       "Bash(node -e \"import\\('./build/_app/immutable/entry/start._y2bbGXI.js'\\).catch\\(e => console.error\\(e.message\\)\\)\")",
       "Bash(npx svelte-check:*)",
-      "Bash(git -C /home/bsaunders/code/pharmverify-pwa log --oneline -10)"
+      "Bash(git -C /home/bsaunders/code/pharmverify-pwa log --oneline -10)",
+      "Bash(mv \"Screenshot 2026-04-08 171703.png\" landing.png)",
+      "Bash(mv \"Screenshot 2026-04-08 171738.png\" home.png)",
+      "Bash(mv \"Screenshot 2026-04-08 171820.png\" verify.png)",
+      "Bash(mv \"Screenshot 2026-04-08 171837.png\" hp.png)",
+      "Bash(mv \"Screenshot 2026-04-08 171901.png\" edit-mode.png)"
     ]
   }
 }

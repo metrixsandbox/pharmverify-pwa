@@ -4,6 +4,20 @@
 
 PharmVerify is an inpatient order verification trainer for pharmacy students, residents, and pharmacists preparing for the floor or for boards. It puts you inside a realistic EHR-style workstation and asks the question every inpatient pharmacist answers a hundred times a shift: *should this order go through?*
 
+![PharmVerify landing page](static/landing.png)
+
+---
+
+## A look inside
+
+| Home dashboard | Verify an order |
+| --- | --- |
+| ![Home](static/home.png) | ![Verify](static/verify.png) |
+
+| H&P chart view | Preceptor edit mode |
+| --- | --- |
+| ![H&P](static/hp.png) | ![Edit mode](static/edit-mode.png) |
+
 ---
 
 ## Why it exists

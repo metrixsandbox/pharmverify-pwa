@@ -155,9 +155,9 @@
       {:else if tab === 'Labs'}
         <LabsTab labs={patient.labs || {}} patientId={$active.patientId} />
       {:else if tab === 'Imaging'}
-        <ImagingTab imaging={patient.imaging || []} />
+        <ImagingTab imaging={patient.imaging || []} patientId={$active.patientId} />
       {:else if tab === 'Cardio'}
-        <CardioTab cardio={patient.cardio} />
+        <CardioTab cardio={patient.cardio} patientId={$active.patientId} />
       {:else if tab === 'Home Meds'}
         <HomeMedsTab meds={patient.homeMeds || []} patientId={$active.patientId} />
       {:else if tab === 'Inpatient Meds'}
