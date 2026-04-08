@@ -1,5 +1,6 @@
 <script>
-  import { difficulty, reviewMode } from '$lib/stores/app.js';
+  import { difficulty, reviewMode, editMode, updateOrder, updateOrderPath } from '$lib/stores/app.js';
+  import Editable from '../Editable.svelte';
   import { recordAttempt } from '$lib/stores/metrics.js';
   let { order, patient, toast, onVerify } = $props();
 
@@ -224,15 +225,15 @@
   }
 
   const clinicalFields = $derived([
-    ['Order Dose', order.clinical?.dose],
-    ['Route', order.clinical?.route],
-    ['Frequency', order.clinical?.freq],
-    ['Admin Duration', order.clinical?.duration || '\u2014'],
-    ['Rate', order.clinical?.rate || '\u2014'],
-    ['Volume', order.clinical?.volume || '\u2014'],
-    ['Priority', order.clinical?.priority],
-    ['Start', order.clinical?.start],
-    ['Stop', order.clinical?.stop || 'Until D/C']
+    ['Order Dose', 'dose', order.clinical?.dose],
+    ['Route', 'route', order.clinical?.route],
+    ['Frequency', 'freq', order.clinical?.freq],
+    ['Admin Duration', 'duration', order.clinical?.duration || ''],
+    ['Rate', 'rate', order.clinical?.rate || ''],
+    ['Volume', 'volume', order.clinical?.volume || ''],
+    ['Priority', 'priority', order.clinical?.priority],
+    ['Start', 'start', order.clinical?.start],
+    ['Stop', 'stop', order.clinical?.stop || '']
   ]);
 
   const quickRef = $derived([
@@ -254,9 +255,9 @@
 <div class="vp">
   <div class="vpm">
     <div class="oh">
-      <div class="od">{order.drugName}{#if order.isNew}<span class="nb">New</span>{/if}</div>
-      <div class="ol">{order.orderLine}</div>
-      <div class="oid">Order: {order.orderId}</div>
+      <div class="od"><Editable value={order.drugName} onCommit={(v) => updateOrder(order.id, { drugName: v })} />{#if order.isNew}<span class="nb">New</span>{/if}</div>
+      <div class="ol"><Editable value={order.orderLine} onCommit={(v) => updateOrder(order.id, { orderLine: v })} multiline /></div>
+      <div class="oid">Order: <Editable value={order.orderId} onCommit={(v) => updateOrder(order.id, { orderId: v })} /></div>
       {#each order.alerts || [] as a}
         {@const s = SEV[a.sev] || SEV.info}
         <div class="ar" style="background:{s.bg};color:{s.c};border:1px solid {s.bd}">{s.d} {a.text}</div>
@@ -274,9 +275,9 @@
     {#if vt === 'clinical' && order.clinical}
       <div class="cd" style="margin-bottom:0">
         <div class="cg">
-          {#each clinicalFields as [label, value]}
+          {#each clinicalFields as [label, key, value]}
             <!-- svelte-ignore a11y_label_has_associated_control -->
-            <div class="fg"><label>{label}</label><div class="fv">{value || '\u2014'}</div></div>
+            <div class="fg"><label>{label}</label><div class="fv"><Editable value={value} onCommit={(v) => updateOrderPath(order.id, `clinical.${key}`, v)} /></div></div>
           {/each}
         </div>
       </div>
@@ -338,9 +339,58 @@
     </div>
     <div class="dp" style="margin-bottom:14px">
       <h3>Order Details</h3>
-      <div class="drow"><span class="dll">Ordered By</span><span class="dvv" style="color:var(--a)">{order.orderedBy}</span></div>
-      <div class="drow"><span class="dll">Date/Time</span><span class="dvv">{order.orderedDt}</span></div>
+      <div class="drow"><span class="dll">Ordered By</span><span class="dvv" style="color:var(--a)"><Editable value={order.orderedBy} onCommit={(v) => updateOrder(order.id, { orderedBy: v })} /></span></div>
+      <div class="drow"><span class="dll">Date/Time</span><span class="dvv"><Editable value={order.orderedDt} onCommit={(v) => updateOrder(order.id, { orderedDt: v })} /></span></div>
     </div>
+    {#if $editMode}
+      {@const t = order.teaching || {}}
+      {@const reasons = t.rejectReasons || []}
+      <div class="dp tch-edit" style="margin-bottom:14px">
+        <h3>&#x270E; Teaching (preceptor)</h3>
+        <div class="drow"><span class="dll">Correct action</span></div>
+        <div style="display:flex;gap:6px;margin:4px 0 10px">
+          {#each ['verify','reject','message'] as a}
+            <button
+              type="button"
+              class="fb"
+              class:act={t.correctAction === a}
+              onclick={() => updateOrderPath(order.id, 'teaching.correctAction', a)}
+            >{a[0].toUpperCase() + a.slice(1)}</button>
+          {/each}
+        </div>
+        <div class="drow" style="margin-top:8px"><span class="dll">Explanation</span></div>
+        <div style="margin-top:4px"><Editable value={t.explanation || ''} multiline onCommit={(v) => updateOrderPath(order.id, 'teaching.explanation', v)} /></div>
+
+        <div class="drow" style="margin-top:14px;align-items:center">
+          <span class="dll">Reject reasons</span>
+          <button type="button" class="fb" onclick={() => {
+            const next = [...reasons, { id: 'r' + (reasons.length + 1), text: 'New reason', correct: false }];
+            updateOrderPath(order.id, 'teaching.rejectReasons', next);
+          }}>+ Add</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+          {#each reasons as r, i}
+            <div class="tch-reason">
+              <button
+                type="button"
+                class="tch-toggle"
+                class:on={r.correct}
+                title={r.correct ? 'Correct reason — click to mark incorrect' : 'Incorrect reason — click to mark correct'}
+                onclick={() => updateOrderPath(order.id, `teaching.rejectReasons.${i}.correct`, !r.correct)}
+              >{r.correct ? '\u2713' : '\u2715'}</button>
+              <div style="flex:1;font-size:12px"><Editable value={r.text} multiline onCommit={(v) => updateOrderPath(order.id, `teaching.rejectReasons.${i}.text`, v)} /></div>
+              <button type="button" class="fb" title="Remove" onclick={() => {
+                const next = reasons.filter((_, idx) => idx !== i);
+                updateOrderPath(order.id, 'teaching.rejectReasons', next);
+              }}>&#x2715;</button>
+            </div>
+          {/each}
+          {#if reasons.length === 0}
+            <div style="font-size:12px;color:var(--t3)">No reject reasons. Click + Add to create one.</div>
+          {/if}
+        </div>
+      </div>
+    {/if}
     <div class="dp">
       <h3>Quick Reference</h3>
       {#each quickRef as [label, value]}

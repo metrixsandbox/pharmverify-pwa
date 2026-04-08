@@ -711,10 +711,462 @@ const UTI_HARD = [
 // ============================================================================
 // Export: Disease → { patient, orders: { easy, medium, hard } }
 // ============================================================================
+// ============================================================================
+// ATRIAL FIBRILLATION — Patient D_AFIB
+// ============================================================================
+const AFIB_PATIENT = {
+  D_AFIB: {
+    name: 'KOWALSKI, MARGARET T',
+    mrn: '01304522',
+    dob: '06/21/1948',
+    age: '77F',
+    weight: '68 kg',
+    height: '158 cm',
+    allergies: ['NKDA'],
+    room: '5W-512A',
+    admitDate: '04/05/2026',
+    attending: 'Reyes, Daniel, MD',
+    dx: 'New-onset atrial fibrillation with rapid ventricular response (I48.91), HTN, T2DM',
+    code: 'Full',
+    hp: {
+      cc: 'Palpitations and lightheadedness x 2 days',
+      hpi: '77 y/o F with HTN, T2DM, and prior TIA (2022) presents with 2 days of palpitations, fatigue, and mild lightheadedness. No chest pain or syncope. In ED found in atrial fibrillation with RVR (HR 132), BP 128/78. Troponin negative x2. TSH normal. Echo shows preserved EF 55%, mild LA enlargement, no thrombus. CHA2DS2-VASc = 5 (age, HTN, DM, prior TIA, female). HAS-BLED = 2. Admitted for rate control and anticoagulation initiation.',
+      pmh: ['HTN', 'T2DM (A1c 7.2)', 'TIA 2022 (no residual deficits)', 'Osteoarthritis', 'Hyperlipidemia'],
+      meds: ['Amlodipine 10 mg PO daily', 'Metformin 1000 mg PO BID', 'Atorvastatin 40 mg PO QHS', 'Aspirin 81 mg PO daily', 'Acetaminophen PRN'],
+      exam: {
+        vitals: 'T 98.0 | HR 128 irregular | BP 124/76 | RR 18 | SpO2 97% RA',
+        cv: 'Irregularly irregular, no murmurs, no JVD',
+        pulm: 'Clear bilaterally',
+        ext: 'No edema, warm, well-perfused',
+        neuro: 'A&O x4, no focal deficits'
+      },
+      assessment: 'New-onset AFib with RVR. Hemodynamically stable. High stroke risk (CHA2DS2-VASc 5). Needs rate control and long-term anticoagulation.',
+      plan: [
+        '1. AFib RVR: Rate control with IV then PO beta-blocker or non-DHP CCB.',
+        '2. Anticoagulation: DOAC preferred given high stroke risk.',
+        '3. Continue home antihypertensives and statin.',
+        '4. Discontinue aspirin once DOAC initiated (no concurrent CAD indication).',
+        '5. Telemetry monitoring.'
+      ]
+    },
+    labs: {
+      '04/05 0500': { Na: '139', K: '4.2', Cl: '102', CO2: '25', BUN: '18', SCr: '0.9', Glucose: ['142','H'], Ca: '9.4', Mg: '2.0', WBC: '7.8', Hgb: '12.9', Hct: '38.2', Plt: '236', INR: '1.0', PTT: '29', Troponin: '<0.01', TSH: '2.1' }
+    },
+    notes: [
+      { dt: '04/05 0700', author: 'Reyes, Daniel, MD', type: 'H&P', text: 'A: New AFib RVR, hemodynamically stable, high stroke risk.\nP: Rate control, initiate anticoagulation per CHA2DS2-VASc, monitor telemetry.' }
+    ],
+    inpatientMeds: [
+      { drug: 'Amlodipine', dose: '10 mg', route: 'PO', freq: 'Daily', sched: ['0900'], status: 'Active' },
+      { drug: 'Atorvastatin', dose: '40 mg', route: 'PO', freq: 'QHS', sched: ['2100'], status: 'Active' },
+      { drug: 'Metformin', dose: '1000 mg', route: 'PO', freq: 'BID', sched: ['0800','2000'], status: 'Active' }
+    ],
+    homeMeds: [
+      { drug: 'Amlodipine 10 mg', freq: 'Daily', status: 'Active' },
+      { drug: 'Aspirin 81 mg', freq: 'Daily', status: 'Active' },
+      { drug: 'Atorvastatin 40 mg', freq: 'QHS', status: 'Active' },
+      { drug: 'Metformin 1000 mg', freq: 'BID', status: 'Active' }
+    ]
+  }
+};
+
+const AFIB_EASY = [
+  mk('AFIB_E1', 'D_AFIB',
+    'dofetilide (TIKOSYN) 500 MCG capsule',
+    '500 mcg, Oral, BID, First dose 4/5/26 0900',
+    '500 mcg', 'Oral', 'BID',
+    {
+      correctAction: 'reject',
+      explanation: 'Dofetilide has strict initiation requirements: MUST be started in a facility with continuous ECG monitoring for a minimum of 3 days, with QTc measured 2-3 hours after each dose, and dose adjusted for CrCl. It is NEVER ordered as a first dose without baseline QTc, and it cannot be initiated outside the mandatory Tikosyn REMS program. Ordering dofetilide as a simple admission order is a serious safety error — torsades de pointes risk is significant.',
+      rejectReasons: [
+        { id: 'r1', text: 'Dofetilide requires mandatory inpatient initiation with continuous ECG monitoring', correct: true },
+        { id: 'r2', text: 'No baseline QTc documented before initiation', correct: true },
+        { id: 'r3', text: 'Dose not adjusted for CrCl per Tikosyn REMS protocol', correct: true },
+        { id: 'r4', text: 'Dofetilide is contraindicated in all AFib patients', correct: false },
+        { id: 'r5', text: 'Dose is too low for rate control', correct: false },
+        { id: 'r6', text: 'Dofetilide is only available IV', correct: false }
+      ]
+    },
+    { priority: 'Stat', timePending: '15m' }
+  ),
+  mk('AFIB_E2', 'D_AFIB',
+    'aspirin 325 MG tablet',
+    '325 mg, Oral, Daily (stroke prevention)',
+    '325 mg', 'Oral', 'Daily',
+    {
+      correctAction: 'reject',
+      explanation: 'Aspirin monotherapy is NOT recommended for stroke prevention in AFib. The 2023 ACC/AHA/HRS AFib guidelines explicitly removed aspirin as an acceptable option for stroke prevention in AFib because it provides minimal stroke protection while still carrying bleeding risk. With CHA2DS2-VASc of 5, this patient requires full oral anticoagulation (DOAC preferred). Aspirin also does not add benefit once a DOAC is started and should be discontinued unless there is a separate CAD indication.',
+      rejectReasons: [
+        { id: 'r1', text: 'Aspirin is not recommended for stroke prevention in AFib (2023 guidelines)', correct: true },
+        { id: 'r2', text: 'CHA2DS2-VASc of 5 requires full oral anticoagulation, not antiplatelet', correct: true },
+        { id: 'r3', text: 'No concurrent indication for aspirin (no CAD/stents)', correct: true },
+        { id: 'r4', text: 'Patient has an aspirin allergy', correct: false },
+        { id: 'r5', text: 'Dose is too high for cardioprotection', correct: false },
+        { id: 'r6', text: 'Aspirin is contraindicated in HTN', correct: false }
+      ]
+    }
+  )
+];
+
+const AFIB_MEDIUM = [
+  mk('AFIB_M1', 'D_AFIB',
+    'metoprolol tartrate 5 MG injection',
+    '5 mg, IV Push, Q5min x3 PRN HR >110',
+    '5 mg', 'IV Push', 'Q5min x3 PRN',
+    {
+      correctAction: 'verify',
+      explanation: 'IV metoprolol 5 mg x3 doses is a standard and appropriate acute rate-control regimen for AFib with RVR in a hemodynamically stable patient. Per ACC/AHA guidelines, beta-blockers (or non-DHP CCBs) are first-line for rate control. Patient has EF 55% (preserved), HR 128, BP 124/76 — no contraindications. Monitor HR and BP between doses.',
+      rejectReasons: [
+        { id: 'r1', text: 'Metoprolol contraindicated in AFib', correct: false },
+        { id: 'r2', text: 'Patient is hemodynamically unstable', correct: false },
+        { id: 'r3', text: 'Dose is too high', correct: false },
+        { id: 'r4', text: 'Patient has a beta-blocker allergy', correct: false },
+        { id: 'r5', text: 'Should only use non-DHP CCB for rate control', correct: false }
+      ]
+    },
+    { priority: 'Stat', timePending: '30m' }
+  ),
+  mk('AFIB_M2', 'D_AFIB',
+    'apixaban (ELIQUIS) 5 MG tablet',
+    '5 mg, Oral, BID, First dose 4/5/26 0900',
+    '5 mg', 'Oral', 'BID',
+    {
+      correctAction: 'verify',
+      explanation: 'Apixaban 5 mg BID is correct for this patient. Dose reduction to 2.5 mg BID would only apply if the patient met ≥2 of: age ≥80, weight ≤60 kg, or SCr ≥1.5. This patient meets only 1 (age 77 is below 80, weight 68 kg, SCr 0.9). DOAC is preferred over warfarin in non-valvular AFib. CHA2DS2-VASc of 5 clearly warrants anticoagulation.',
+      rejectReasons: [
+        { id: 'r1', text: 'Dose should be reduced to 2.5 mg BID', correct: false },
+        { id: 'r2', text: 'Warfarin is preferred over DOAC', correct: false },
+        { id: 'r3', text: 'Patient does not need anticoagulation', correct: false },
+        { id: 'r4', text: 'Patient has an apixaban allergy', correct: false },
+        { id: 'r5', text: 'Apixaban contraindicated with metoprolol', correct: false }
+      ]
+    }
+  ),
+  mk('AFIB_M3', 'D_AFIB',
+    'digoxin 0.5 MG injection',
+    '0.5 mg, IV Push, Once (loading dose)',
+    '0.5 mg', 'IV Push', 'Once',
+    {
+      correctAction: 'reject',
+      explanation: 'Digoxin is NOT first-line for rate control in AFib. Per ACC/AHA, digoxin should be reserved for patients with HFrEF or those who cannot tolerate beta-blockers or non-DHP CCBs. This patient has preserved EF (55%) and no contraindication to beta-blockers. Digoxin has a narrow therapeutic window, delayed onset, and is associated with increased mortality when used as first-line in AFib without HF. The patient is already on metoprolol which should be optimized first.',
+      rejectReasons: [
+        { id: 'r1', text: 'Digoxin is not first-line rate control (reserve for HFrEF or BB/CCB intolerance)', correct: true },
+        { id: 'r2', text: 'Patient has preserved EF — no HFrEF indication', correct: true },
+        { id: 'r3', text: 'Patient already on beta-blocker which should be optimized first', correct: true },
+        { id: 'r4', text: 'Digoxin is contraindicated in all AFib', correct: false },
+        { id: 'r5', text: 'Dose is below the loading dose range', correct: false },
+        { id: 'r6', text: 'Patient has a digoxin allergy', correct: false }
+      ]
+    }
+  )
+];
+
+const AFIB_HARD = [
+  {
+    ...mk('AFIB_H1', 'D_AFIB',
+      'amiodarone 150 MG injection',
+      '150 mg IV bolus then 1 mg/min x6h then 0.5 mg/min',
+      '150 mg', 'IV', 'Bolus then infusion',
+      null,
+      { priority: 'Stat' }
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'suboptimal', message: 'Amiodarone is acceptable for rhythm control in AFib but is not first-line for rate control in a stable patient. This patient is hemodynamically stable (BP 124/76) and should first receive adequate trial of beta-blocker or non-DHP CCB. Amiodarone carries significant long-term toxicities (thyroid, pulmonary, hepatic) and should be reserved for refractory cases or when rhythm control is the chosen strategy.' },
+        reject: { grade: 'suboptimal', message: 'Rejecting outright is too aggressive. Amiodarone has a clear role in AFib — just not as first-line rate control in a stable patient. A clarification is more appropriate than rejection.' },
+        message: { grade: 'optimal', message: 'Best answer. Clarify with the team whether the goal is rate control (try BB/CCB first) or rhythm control (discuss cardioversion and the rationale for amiodarone given its toxicity profile). Also need anticoagulation duration planning before/after any cardioversion.' }
+      },
+      explanation: 'Amiodarone is nuanced in new-onset stable AFib — clarify rate vs rhythm strategy.',
+      rejectReasons: [
+        { id: 'r1', text: 'Amiodarone is contraindicated in AFib', correct: false },
+        { id: 'r2', text: 'Dose is too high', correct: false },
+        { id: 'r3', text: 'Patient has amiodarone allergy', correct: false }
+      ]
+    }
+  },
+  {
+    ...mk('AFIB_H2', 'D_AFIB',
+      'warfarin 5 MG tablet',
+      '5 mg, Oral, Daily, First dose 4/5/26 2000',
+      '5 mg', 'Oral', 'Daily',
+      null,
+      { times: ['2000'] }
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'acceptable', message: 'Warfarin is a valid anticoagulation choice for non-valvular AFib, but current guidelines prefer DOACs over warfarin unless there is a specific contraindication (mechanical valve, moderate-to-severe mitral stenosis, ESRD on some protocols). This patient has normal SCr (0.9) and no valvular disease — a DOAC would be preferred first-line.' },
+        reject: { grade: 'suboptimal', message: 'Warfarin is not wrong, just not preferred. Rejecting outright misses the opportunity to discuss the DOAC-first strategy.' },
+        message: { grade: 'optimal', message: 'Best answer. Clarify whether the team specifically prefers warfarin (e.g., cost, patient preference, prior failure of DOAC) or whether a DOAC such as apixaban would be appropriate given current guideline preferences.' }
+      },
+      explanation: 'DOACs are preferred over warfarin in non-valvular AFib — clarify team rationale.',
+      rejectReasons: [
+        { id: 'r1', text: 'Warfarin is never used in AFib anymore', correct: false },
+        { id: 'r2', text: 'Dose is too high', correct: false },
+        { id: 'r3', text: 'Patient has warfarin allergy', correct: false }
+      ]
+    }
+  },
+  {
+    ...mk('AFIB_H3', 'D_AFIB',
+      'diltiazem 20 MG injection',
+      '20 mg, IV Push, Once (0.25 mg/kg)',
+      '20 mg', 'IV Push', 'Once',
+      null,
+      { priority: 'Stat' }
+    ),
+    teaching: {
+      correctAction: 'verify',
+      detailedFeedback: {
+        verify: { grade: 'optimal', message: 'Correct. IV diltiazem 0.25 mg/kg (~17-20 mg for 68 kg) is a standard and guideline-supported alternative for acute AFib rate control in a hemodynamically stable patient with preserved EF. Patient has EF 55% (no HFrEF contraindication) and BP 124/76 (adequate). Non-DHP CCBs are equivalent to beta-blockers as first-line rate control in HFpEF or normal EF.' },
+        reject: { grade: 'suboptimal', message: 'Diltiazem is only contraindicated in HFrEF. This patient has preserved EF (55%) — diltiazem is an appropriate first-line rate control agent here. Rejecting would delay symptom relief.' },
+        message: { grade: 'acceptable', message: 'Diltiazem is clearly appropriate given preserved EF. Messaging for clarification is unnecessary but not harmful.' }
+      },
+      explanation: 'Non-DHP CCBs are fine for rate control in AFib with preserved EF. They are only contraindicated in HFrEF.',
+      rejectReasons: [
+        { id: 'r1', text: 'Diltiazem is contraindicated in all AFib', correct: false },
+        { id: 'r2', text: 'Patient has HFrEF', correct: false },
+        { id: 'r3', text: 'Dose is too high', correct: false },
+        { id: 'r4', text: 'Should not combine with metoprolol', correct: false }
+      ]
+    }
+  }
+];
+
+// ============================================================================
+// SEPSIS — Patient D_SEP
+// ============================================================================
+const SEP_PATIENT = {
+  D_SEP: {
+    name: 'WASHINGTON, ANDRE L',
+    mrn: '01405733',
+    dob: '08/14/1963',
+    age: '62M',
+    weight: '94 kg',
+    height: '180 cm',
+    allergies: ['Vancomycin (red man — infusion reaction, not true allergy)'],
+    room: 'MICU-3',
+    admitDate: '04/05/2026',
+    attending: 'Nakamura, Lisa, MD',
+    dx: 'Septic shock from intra-abdominal source (R65.21), T2DM, CKD Stage II',
+    code: 'Full',
+    hp: {
+      cc: 'Fever, abdominal pain, and confusion x 1 day',
+      hpi: '62 y/o M with T2DM (A1c 9.1) and CKD Stage II (baseline SCr 1.3) presents with fever to 39.4, diffuse abdominal pain, and new confusion. In ED found hypotensive (BP 78/44), tachycardic (HR 128), tachypneic (RR 28), febrile (T 39.3), and with mottled extremities. Lactate 4.8. CT abdomen shows sigmoid diverticulitis with free air and 4 cm abscess. Started on IVF resuscitation, empiric broad-spectrum antibiotics, and norepinephrine for MAP <65. Surgery consulted for source control.',
+      pmh: ['T2DM (A1c 9.1)', 'CKD Stage II (baseline SCr 1.3)', 'HTN', 'Diverticulosis', 'Former smoker'],
+      meds: ['Metformin 1000 mg PO BID', 'Lisinopril 20 mg PO daily', 'Insulin glargine 24 units SQ QHS', 'Atorvastatin 20 mg PO QHS'],
+      exam: {
+        vitals: 'T 39.3 | HR 124 | BP 88/52 (on norepi) | RR 26 | SpO2 94% 4L',
+        cv: 'Tachycardic, regular, no murmurs',
+        pulm: 'Clear bilaterally',
+        abd: 'Diffusely tender, guarding, decreased bowel sounds',
+        ext: 'Cool, mottled, delayed cap refill',
+        neuro: 'Confused, oriented to self only'
+      },
+      assessment: 'Septic shock from perforated diverticulitis with abscess. Requires broad-spectrum empiric antibiotics covering gram-negatives, anaerobes, and enterococci. Source control pending surgery. Acute on chronic kidney injury.',
+      plan: [
+        '1. Septic shock: Hour-1 bundle — lactate, cultures, broad-spectrum antibiotics, IVF 30 mL/kg, vasopressors to MAP >65.',
+        '2. Source control: Surgery for perforation / abscess drainage.',
+        '3. Hold metformin and lisinopril due to AKI.',
+        '4. Stress-dose steroids if refractory shock.',
+        '5. VTE prophylaxis when hemodynamically stable.',
+        '6. Tight glucose control with IV insulin.'
+      ]
+    },
+    labs: {
+      '04/05 0500': { Na: '138', K: ['5.2','H'], Cl: '104', CO2: ['18','L'], BUN: ['42','H'], SCr: ['2.4','H'], Glucose: ['312','H'], Ca: '8.6', Mg: '1.8', Phos: ['4.8','H'], WBC: ['24.8','H'], Hgb: '12.1', Hct: '36.0', Plt: ['112','L'], PT: '14.2', INR: '1.3', Lactate: ['4.8','H'], Procalcitonin: ['12.4','H'], 'CRP': ['22.6','H'] },
+      '04/04 2300': { WBC: ['26.4','H'], Lactate: ['5.2','H'], SCr: ['2.6','H'], K: ['5.4','H'] }
+    },
+    notes: [
+      { dt: '04/05 0545', author: 'Nakamura, Lisa, MD', type: 'ICU Admission Note', text: 'A: Septic shock from perforated sigmoid diverticulitis. Acute on chronic kidney injury.\nP: Hour-1 sepsis bundle, surgical source control, pressors to MAP >65, hold nephrotoxins, tight glucose control.' }
+    ],
+    imaging: [
+      { dt: '04/05 0400', type: 'CT Abdomen/Pelvis w/ contrast', findings: 'Sigmoid diverticulitis with pericolonic free air and 4 cm rim-enhancing fluid collection consistent with abscess. No large-volume free fluid.' }
+    ],
+    inpatientMeds: [
+      { drug: 'Insulin infusion', dose: 'Titrate to glucose 140-180', route: 'IV', freq: 'Continuous', sched: ['Cont'], status: 'Active' },
+      { drug: 'Norepinephrine', dose: 'Titrate to MAP >65', route: 'IV', freq: 'Continuous', sched: ['Cont'], status: 'Active' }
+    ],
+    homeMeds: [
+      { drug: 'Atorvastatin 20 mg', freq: 'QHS', status: 'Active' },
+      { drug: 'Insulin glargine 24 units', freq: 'QHS', status: 'Active' },
+      { drug: 'Lisinopril 20 mg', freq: 'Daily', status: 'HELD (AKI)' },
+      { drug: 'Metformin 1000 mg', freq: 'BID', status: 'HELD (AKI)' }
+    ]
+  }
+};
+
+const SEP_EASY = [
+  mk('SEP_E1', 'D_SEP',
+    'gentamicin 560 MG injection',
+    '560 mg (6 mg/kg), IV, Once, First dose 4/5/26 0900',
+    '560 mg', 'IV', 'Once',
+    {
+      correctAction: 'reject',
+      explanation: 'Aminoglycoside monotherapy is inappropriate for septic shock from an intra-abdominal source. Gentamicin lacks anaerobic coverage (needed for GI perforation) and lacks enterococcal coverage. Additionally, this patient has acute kidney injury (SCr rising from 1.3 → 2.4) and aminoglycosides are directly nephrotoxic — starting gentamicin in active AKI is a serious error. Empiric intra-abdominal sepsis coverage should include piperacillin-tazobactam OR carbapenem OR ceftriaxone + metronidazole.',
+      rejectReasons: [
+        { id: 'r1', text: 'Nephrotoxic agent in active AKI', correct: true },
+        { id: 'r2', text: 'No anaerobic coverage for intra-abdominal source', correct: true },
+        { id: 'r3', text: 'Not appropriate as empiric monotherapy', correct: true },
+        { id: 'r4', text: 'Patient has a gentamicin allergy', correct: false },
+        { id: 'r5', text: 'Dose is too low', correct: false },
+        { id: 'r6', text: 'Gentamicin only available PO', correct: false }
+      ]
+    },
+    { priority: 'Stat', timePending: '10m' }
+  ),
+  mk('SEP_E2', 'D_SEP',
+    'metformin 1000 MG tablet',
+    '1000 mg, Oral, BID (continue home dose)',
+    '1000 mg', 'Oral', 'BID',
+    {
+      correctAction: 'reject',
+      explanation: 'Metformin is CONTRAINDICATED in this patient. They are in septic shock with acute kidney injury (SCr 2.4, up from baseline 1.3), hypotension, and elevated lactate (4.8). Metformin should be held when eGFR <30 mL/min, in any acute illness with tissue hypoperfusion, or whenever there is risk of lactic acidosis. Continuing metformin in septic shock is a classic and dangerous error — risk of fatal metformin-associated lactic acidosis.',
+      rejectReasons: [
+        { id: 'r1', text: 'Contraindicated in AKI / unstable renal function', correct: true },
+        { id: 'r2', text: 'Risk of metformin-associated lactic acidosis in shock', correct: true },
+        { id: 'r3', text: 'Patient already has elevated lactate (4.8)', correct: true },
+        { id: 'r4', text: 'Should be continued because A1c is high', correct: false },
+        { id: 'r5', text: 'Dose is too high', correct: false },
+        { id: 'r6', text: 'Patient has a metformin allergy', correct: false }
+      ]
+    }
+  )
+];
+
+const SEP_MEDIUM = [
+  mk('SEP_M1', 'D_SEP',
+    'piperacillin-tazobactam (ZOSYN) 4.5 G IVPB',
+    '4.5 g, IVPB, Q8H (extended infusion over 4h), First dose Stat',
+    '4.5 g', 'IVPB', 'Q8H',
+    {
+      correctAction: 'verify',
+      explanation: 'Piperacillin-tazobactam 4.5 g IV Q8H as extended infusion is an excellent empiric choice for intra-abdominal sepsis. It provides broad gram-negative, gram-positive, and anaerobic coverage including Pseudomonas and Enterococcus. Extended infusion improves time-above-MIC and is preferred in severe infections. No dose reduction needed initially in sepsis with AKI — adequate drug concentrations are critical in the first 48 hours; renal dose adjustment can occur after stabilization.',
+      rejectReasons: [
+        { id: 'r1', text: 'Dose should be reduced for AKI immediately', correct: false },
+        { id: 'r2', text: 'Lacks anaerobic coverage', correct: false },
+        { id: 'r3', text: 'Extended infusion is never recommended', correct: false },
+        { id: 'r4', text: 'Patient has a beta-lactam allergy', correct: false },
+        { id: 'r5', text: 'Should use ceftriaxone monotherapy instead', correct: false }
+      ]
+    },
+    { priority: 'Stat', timePending: '8m' }
+  ),
+  mk('SEP_M2', 'D_SEP',
+    'vancomycin 1750 MG IVPB',
+    '1750 mg (18.6 mg/kg), IVPB, loading dose over 90 min',
+    '1750 mg', 'IVPB', 'Once (load)',
+    {
+      correctAction: 'message',
+      explanation: 'Vancomycin loading dose is reasonable (~20 mg/kg actual body weight) but this patient has a documented vancomycin "allergy" of red man syndrome. Red man syndrome is an infusion-rate-related histamine reaction, NOT a true hypersensitivity, and is not a contraindication to vancomycin. However, this needs to be clarified in the chart, and the order should specify a slower infusion rate (over at least 2 hours, often longer). Pharmacists should message to: (1) confirm the red man history is not true allergy, (2) extend infusion time, and (3) consider pre-medication if history is severe. Also need pharmacokinetic dosing consult for subsequent doses in AKI.',
+      rejectReasons: [
+        { id: 'r1', text: 'True vancomycin allergy — must reject', correct: false },
+        { id: 'r2', text: 'Dose is too high', correct: false },
+        { id: 'r3', text: 'Not indicated for intra-abdominal sepsis at all', correct: false },
+        { id: 'r4', text: 'Should not be used in AKI', correct: false },
+        { id: 'r5', text: 'Loading doses are never recommended', correct: false }
+      ]
+    },
+    { priority: 'Stat' }
+  ),
+  mk('SEP_M3', 'D_SEP',
+    'hydrocortisone 50 MG injection',
+    '50 mg, IV Push, Q6H (stress dose for refractory shock)',
+    '50 mg', 'IV Push', 'Q6H',
+    {
+      correctAction: 'verify',
+      explanation: 'Hydrocortisone 200 mg/day (50 mg IV Q6H) is appropriate for septic shock that remains hypotensive despite adequate fluid resuscitation and vasopressor therapy. Per Surviving Sepsis Campaign guidelines, IV hydrocortisone is recommended in adults with septic shock requiring ongoing vasopressor support. This patient remains on norepinephrine with BP 88/52 — meets criteria. Stress-dose steroids reduce shock duration and may improve mortality in refractory cases.',
+      rejectReasons: [
+        { id: 'r1', text: 'Steroids contraindicated in all sepsis', correct: false },
+        { id: 'r2', text: 'Dose should be IV methylprednisolone instead', correct: false },
+        { id: 'r3', text: 'Patient not refractory enough yet', correct: false },
+        { id: 'r4', text: 'Patient has a steroid allergy', correct: false },
+        { id: 'r5', text: 'Will worsen glucose control — should not be given', correct: false }
+      ]
+    }
+  )
+];
+
+const SEP_HARD = [
+  {
+    ...mk('SEP_H1', 'D_SEP',
+      'meropenem 1 G IVPB',
+      '1 g, IVPB, Q8H, First dose Stat',
+      '1 g', 'IVPB', 'Q8H',
+      null,
+      { priority: 'Stat' }
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'acceptable', message: 'Meropenem is an acceptable empiric choice for intra-abdominal sepsis — broad gram-negative, gram-positive, and anaerobic coverage including ESBL producers. However, patient is already starting on piperacillin-tazobactam (excellent empiric choice), so adding meropenem would be duplicative coverage unless there is a specific reason (prior ESBL, recent broad-spectrum exposure).' },
+        reject: { grade: 'suboptimal', message: 'Meropenem is not wrong for intra-abdominal sepsis — it is a valid empiric option. Rejecting outright without clarifying rationale misses the chance to optimize stewardship.' },
+        message: { grade: 'optimal', message: 'Best answer. Clarify with the team: why meropenem when piperacillin-tazobactam is already started? Valid reasons could be prior ESBL history, recent broad-spectrum exposure, or healthcare-associated risk factors. Otherwise, de-escalate or choose one agent to avoid redundant antipseudomonal coverage.' }
+      },
+      explanation: 'Carbapenem duplicates piperacillin-tazobactam coverage — clarify rationale for stewardship.',
+      rejectReasons: [
+        { id: 'r1', text: 'Meropenem is contraindicated in sepsis', correct: false },
+        { id: 'r2', text: 'Dose is too high', correct: false },
+        { id: 'r3', text: 'No anaerobic coverage', correct: false },
+        { id: 'r4', text: 'Patient has a meropenem allergy', correct: false }
+      ]
+    }
+  },
+  {
+    ...mk('SEP_H2', 'D_SEP',
+      'normal saline 0.9% 1000 ML IVPB',
+      '1 L, IV bolus, over 30 min',
+      '1 L', 'IV', 'Bolus',
+      null,
+      { priority: 'Stat' }
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'suboptimal', message: '0.9% saline is acceptable but no longer the preferred crystalloid in sepsis. Surviving Sepsis Campaign and SMART/SALT-ED trials support balanced crystalloids (Lactated Ringers, Plasma-Lyte) over normal saline to reduce hyperchloremic acidosis and AKI. This patient already has AKI and metabolic acidosis — large-volume NS would likely worsen both.' },
+        reject: { grade: 'suboptimal', message: 'Rejecting the fluid outright is not appropriate — the patient needs volume resuscitation. Better to clarify the choice of crystalloid.' },
+        message: { grade: 'optimal', message: 'Best answer. Recommend switching to a balanced crystalloid (LR or Plasma-Lyte) given existing hyperchloremic metabolic acidosis and AKI. Volume resuscitation is clearly needed — just not with chloride-rich saline.' }
+      },
+      explanation: 'Balanced crystalloids are preferred over normal saline in sepsis with AKI and acidosis.',
+      rejectReasons: [
+        { id: 'r1', text: 'Patient should not receive any IV fluids', correct: false },
+        { id: 'r2', text: 'NS is contraindicated in all sepsis', correct: false },
+        { id: 'r3', text: 'Rate is too slow', correct: false },
+        { id: 'r4', text: 'Patient has a saline allergy', correct: false }
+      ]
+    }
+  },
+  {
+    ...mk('SEP_H3', 'D_SEP',
+      'enoxaparin (LOVENOX) 40 MG injection',
+      '40 mg, SQ, Daily (VTE prophylaxis)',
+      '40 mg', 'SQ', 'Daily',
+      null
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'suboptimal', message: 'Enoxaparin 40 mg SQ daily is the standard VTE prophylaxis dose, but two issues: (1) patient has active septic shock with platelets 112 and coagulopathy (INR 1.3), timing of pharmacologic VTE prophylaxis during active shock is nuanced — mechanical prophylaxis may be preferred until stable; and (2) enoxaparin requires renal dose adjustment to 30 mg SQ daily when CrCl <30 mL/min, and this patient has AKI with SCr 2.4 and likely low CrCl.' },
+        reject: { grade: 'acceptable', message: 'Rejecting is reasonable given the AKI — dose needs adjustment and patient is not yet hemodynamically stable. However, clarifying with the team is the preferred move so mechanical prophylaxis can be initiated in the interim.' },
+        message: { grade: 'optimal', message: 'Best answer. Recommend: (1) hold pharmacologic prophylaxis until hemodynamically stable and platelets trending up, (2) use mechanical prophylaxis (SCDs) now, (3) when ready to start enoxaparin, dose adjust based on CrCl — likely 30 mg SQ daily given AKI. Consider switching to unfractionated heparin if renal function is unstable.' }
+      },
+      explanation: 'VTE prophylaxis in septic shock with AKI needs timing and dose adjustment consideration.',
+      rejectReasons: [
+        { id: 'r1', text: 'VTE prophylaxis is not indicated in sepsis', correct: false },
+        { id: 'r2', text: 'Enoxaparin is contraindicated in all AKI', correct: false },
+        { id: 'r3', text: 'Dose is too low', correct: false },
+        { id: 'r4', text: 'Patient has a heparin allergy', correct: false }
+      ]
+    }
+  }
+];
+
 export const DISEASE_CASES = {
-  hf:  { patients: HF_PATIENT,  orders: { easy: HF_EASY,  medium: HF_MEDIUM,  hard: HF_HARD  } },
-  cap: { patients: CAP_PATIENT, orders: { easy: CAP_EASY, medium: CAP_MEDIUM, hard: CAP_HARD } },
-  uti: { patients: UTI_PATIENT, orders: { easy: UTI_EASY, medium: UTI_MEDIUM, hard: UTI_HARD } }
+  hf:     { patients: HF_PATIENT,   orders: { easy: HF_EASY,   medium: HF_MEDIUM,   hard: HF_HARD   } },
+  cap:    { patients: CAP_PATIENT,  orders: { easy: CAP_EASY,  medium: CAP_MEDIUM,  hard: CAP_HARD  } },
+  uti:    { patients: UTI_PATIENT,  orders: { easy: UTI_EASY,  medium: UTI_MEDIUM,  hard: UTI_HARD  } },
+  afib:   { patients: AFIB_PATIENT, orders: { easy: AFIB_EASY, medium: AFIB_MEDIUM, hard: AFIB_HARD } },
+  sepsis: { patients: SEP_PATIENT,  orders: { easy: SEP_EASY,  medium: SEP_MEDIUM,  hard: SEP_HARD  } }
 };
 
 export function getDiseaseCases(diseaseId, level) {

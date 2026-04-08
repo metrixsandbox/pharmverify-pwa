@@ -29,6 +29,63 @@ export const view = writable('home');
 export const active = writable(null);
 export const reviewMode = writable(false);
 export const showUpload = writable(false);
+export const editMode = writable(false);
+
+export function updatePatient(patientId, patch) {
+  patients.update(p => {
+    const cur = p[patientId];
+    if (!cur) return p;
+    return { ...p, [patientId]: { ...cur, ...patch } };
+  });
+  snapshot();
+}
+
+export function updatePatientPath(patientId, path, value) {
+  patients.update(p => {
+    const cur = p[patientId];
+    if (!cur) return p;
+    const next = structuredClone(cur);
+    const keys = path.split('.');
+    let obj = next;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (obj[keys[i]] == null) obj[keys[i]] = {};
+      obj = obj[keys[i]];
+    }
+    obj[keys[keys.length - 1]] = value;
+    return { ...p, [patientId]: next };
+  });
+  snapshot();
+}
+
+export function updateOrder(orderId, patch) {
+  let updated = null;
+  orders.update(list => list.map(o => {
+    if (o.id !== orderId) return o;
+    updated = { ...o, ...patch };
+    return updated;
+  }));
+  active.update(a => (a && a.id === orderId && updated) ? updated : a);
+  snapshot();
+}
+
+export function updateOrderPath(orderId, path, value) {
+  let updated = null;
+  orders.update(list => list.map(o => {
+    if (o.id !== orderId) return o;
+    const next = structuredClone(o);
+    const keys = path.split('.');
+    let obj = next;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (obj[keys[i]] == null) obj[keys[i]] = {};
+      obj = obj[keys[i]];
+    }
+    obj[keys[keys.length - 1]] = value;
+    updated = next;
+    return next;
+  }));
+  active.update(a => (a && a.id === orderId && updated) ? updated : a);
+  snapshot();
+}
 export const difficulty = writable('default');
 export const theme = writable(
   typeof localStorage !== 'undefined' ? (localStorage.getItem('pv-theme') || 'dark') : 'dark'

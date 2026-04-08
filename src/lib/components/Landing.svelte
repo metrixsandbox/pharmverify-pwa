@@ -1,5 +1,8 @@
 <script>
+  import { fade, fly, scale } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
   import AccountCreation from './AccountCreation.svelte';
+  import { inview } from '$lib/utils/inview.js';
   import { theme } from '$lib/stores/app.js';
 
   let showSignup = $state(false);
@@ -30,14 +33,14 @@
 
     <section class="lp-hero">
       <div class="lp-hero-l">
-        <div class="lp-eyebrow">Inpatient pharmacy training</div>
-        <h1 class="lp-h1">Train pharmacist judgment, <span class="lp-accent">one order at a time.</span></h1>
-        <p class="lp-lede">Realistic inpatient orders inside an EHR-style workstation. No hints. Real feedback the moment you decide.</p>
-        <div class="lp-cta-row">
+        <div class="lp-eyebrow" in:fly={{ y: -10, duration: 500, easing: quintOut }}>Inpatient pharmacy training</div>
+        <h1 class="lp-h1" in:fly={{ y: 24, duration: 700, delay: 80, easing: quintOut }}>Train pharmacist judgment, <span class="lp-accent">one order at a time.</span></h1>
+        <p class="lp-lede" in:fly={{ y: 16, duration: 600, delay: 220, easing: quintOut }}>Realistic inpatient orders inside an EHR-style workstation. No hints. Real feedback the moment you decide.</p>
+        <div class="lp-cta-row" in:fade={{ duration: 500, delay: 360 }}>
           <button class="lp-cta" onclick={() => showSignup = true}>Start a case &rarr;</button>
           <button class="lp-cta-ghost" onclick={scrollToHow}>How it works</button>
         </div>
-        <div class="lp-trust">
+        <div class="lp-trust" in:fade={{ duration: 500, delay: 480 }}>
           <span>&#x2713; ISMP high-alert meds</span>
           <span>&#x2713; IDSA &amp; ACC/AHA guidelines</span>
           <span>&#x2713; Board-prep aligned</span>
@@ -45,7 +48,7 @@
       </div>
 
       <!-- Mock EHR workstation -->
-      <div class="lp-mock">
+      <div class="lp-mock" in:scale={{ start: 0.94, duration: 700, delay: 200, easing: quintOut }}>
         <div class="lp-mock-bar">
           <span class="lp-dot lp-dot-r"></span>
           <span class="lp-dot lp-dot-y"></span>
@@ -85,19 +88,19 @@
     </section>
 
     <section class="lp-how" id="how">
-      <h2 class="lp-h2">How it works</h2>
+      <h2 class="lp-h2" use:inview>How it works</h2>
       <div class="lp-steps">
-        <div class="lp-step">
+        <div class="lp-step reveal-d1" use:inview>
           <div class="lp-step-n">1</div>
           <div class="lp-step-t">Review the chart</div>
           <div class="lp-step-d">H&amp;P, labs with abnormal flags, home meds, inpatient meds, notes &mdash; just like a real EHR.</div>
         </div>
-        <div class="lp-step">
+        <div class="lp-step reveal-d2" use:inview>
           <div class="lp-step-n">2</div>
           <div class="lp-step-t">Decide</div>
           <div class="lp-step-d">Verify, reject with a reason, or message the prescriber. No hints, no priming.</div>
         </div>
-        <div class="lp-step">
+        <div class="lp-step reveal-d3" use:inview>
           <div class="lp-step-n">3</div>
           <div class="lp-step-t">Get graded feedback</div>
           <div class="lp-step-d">See the clinical rationale, the guideline, and what an optimal action would have been.</div>
@@ -106,22 +109,19 @@
     </section>
 
     <section class="lp-disease">
-      <h2 class="lp-h2">Pick a disease, pick a difficulty</h2>
-      <p class="lp-h2-sub">Cases organized by the conditions you'll actually verify on the floor.</p>
+      <h2 class="lp-h2" use:inview>Pick a disease, pick a difficulty</h2>
+      <p class="lp-h2-sub reveal-d1" use:inview>Cases organized by the conditions you'll actually verify on the floor.</p>
       <div class="lp-disease-grid">
-        <div class="lp-dz"><span class="lp-dz-ic">{'\u2764'}</span><div>Heart Failure</div></div>
-        <div class="lp-dz"><span class="lp-dz-ic">{'\u{1FAC1}'}</span><div>Pneumonia (CAP)</div></div>
-        <div class="lp-dz"><span class="lp-dz-ic">{'\u{1F48A}'}</span><div>UTI / Pyelo</div></div>
-        <div class="lp-dz dim"><span class="lp-dz-ic">{'\u{1F32C}'}</span><div>COPD <span class="lp-dz-soon">soon</span></div></div>
-        <div class="lp-dz dim"><span class="lp-dz-ic">{'\u{1F4A7}'}</span><div>DKA <span class="lp-dz-soon">soon</span></div></div>
-        <div class="lp-dz dim"><span class="lp-dz-ic">{'\u{1F525}'}</span><div>Sepsis <span class="lp-dz-soon">soon</span></div></div>
+        {#each [['\u2764','Heart Failure',false],['\u{1FAC1}','Pneumonia (CAP)',false],['\u{1F48A}','UTI / Pyelo',false],['\u{1F32C}','COPD',true],['\u{1F4A7}','DKA',true],['\u{1F525}','Sepsis',true]] as [ic, name, soon], i}
+          <div class="lp-dz reveal-zoom reveal-d{(i % 5) + 1}" class:dim={soon} use:inview><span class="lp-dz-ic">{ic}</span><div>{name}{#if soon} <span class="lp-dz-soon">soon</span>{/if}</div></div>
+        {/each}
       </div>
     </section>
 
     <section class="lp-final">
-      <h2 class="lp-h2">Ready to start?</h2>
-      <button class="lp-cta" onclick={() => showSignup = true}>Create your account &rarr;</button>
-      <p class="lp-foot">Your data is stored locally on this device only.</p>
+      <h2 class="lp-h2" use:inview>Ready to start?</h2>
+      <button class="lp-cta reveal-d1" use:inview onclick={() => showSignup = true}>Create your account &rarr;</button>
+      <p class="lp-foot reveal-d2" use:inview>Your data is stored locally on this device only.</p>
     </section>
   </div>
 {/if}

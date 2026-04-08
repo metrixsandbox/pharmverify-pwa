@@ -8,6 +8,18 @@ export function parseCaseFile(text) {
   if (!data.patients || typeof data.patients !== "object") throw new Error("Missing 'patients' object");
   if (!data.orders || !Array.isArray(data.orders)) throw new Error("Missing 'orders' array");
 
+  // Accept patients as either an object keyed by patientId, or an array of objects with a patientId field.
+  if (Array.isArray(data.patients)) {
+    const obj = {};
+    for (let i = 0; i < data.patients.length; i++) {
+      const p = data.patients[i];
+      const pid = p.patientId || p.id;
+      if (!pid) throw new Error(`Patient at index ${i} missing patientId`);
+      obj[pid] = p;
+    }
+    data.patients = obj;
+  }
+
   const patientIds = Object.keys(data.patients);
   if (patientIds.length === 0) throw new Error("No patients found");
 
@@ -24,6 +36,9 @@ export function parseCaseFile(text) {
     if (!p.inpatientMeds) p.inpatientMeds = [];
     if (!p.homeMeds) p.homeMeds = [];
     if (!p.code) p.code = "Full";
+    if (!p.dx) p.dx = p.diseaseState || (Array.isArray(p.pmh) ? p.pmh[0] : "") || "";
+    if (!p.room) p.room = p.location || "";
+    if (!p.admitDate) p.admitDate = p.admitDt || "";
   }
 
   for (let i = 0; i < data.orders.length; i++) {
