@@ -76,6 +76,31 @@ We took the alert bars and the hint banners *out* on purpose. Real EHRs are full
 
 ---
 
+## For preceptors: edit mode
+
+Preceptors can flip the whole workstation into **edit mode** from the sidebar (the gold pencil button). When it's on, the app gets a marching-ants gold border so you always know you're authoring, not practicing. Then almost every field in the chart becomes click-to-edit:
+
+- **Patient banner** — name, MRN, age, weight, room, admit date, attending
+- **Allergies** — add/remove agents, pick severity (Mild → Life-threatening), choose from the top 10 allergic reactions in a dropdown
+- **H&P** — chief complaint, HPI, PMH, home meds, vitals (each label/value), every physical exam section, assessment, plan
+- **Labs** — edit any value; abnormal flags (H/L) are recomputed automatically against adult reference ranges
+- **Progress notes, home meds, inpatient meds** — edit in place, add or remove rows
+- **Imaging, cardio** — edit findings and impressions
+- **The order itself** — drug, dose, route, frequency, indication, ordering provider, timestamp
+- **Teaching panel (preceptor only)** — toggle the correct action (verify / reject / message), edit the explanation, and add/edit/remove reject reasons with a per-reason correct/incorrect toggle
+
+All edits persist locally so you can build or tweak a case without leaving the app.
+
+---
+
+## Polish
+
+- Modern entry transitions on the home and landing pages (fly, fade, scale, staggered reveals)
+- Scroll-triggered reveal animations on the landing page (respects `prefers-reduced-motion`)
+- Smooth slide-down difficulty picker when you choose a disease tile, with no layout shift
+
+---
+
 ## Privacy
 
 All cases, attempts, and progress are stored **locally on your device**. Nothing is uploaded. No accounts on a server, no PHI, no tracking.
