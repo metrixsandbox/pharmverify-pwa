@@ -2926,81 +2926,88 @@ function ChartView($$renderer, $$props) {
         onCommit: (v) => updatePatient(store_get($$store_subs ??= {}, "$active", active).patientId, { attending: v })
       });
       $$renderer2.push(`<!----></span></div></div> <div class="cbr">`);
-      if (store_get($$store_subs ??= {}, "$editMode", editMode)) {
+      if (!store_get($$store_subs ??= {}, "$editMode", editMode)) {
         $$renderer2.push("<!--[0-->");
         $$renderer2.push(`<!--[-->`);
-        const each_array = ensure_array_like((patient().allergies || []).map(normalizeAllergy));
-        for (let i = 0, $$length = each_array.length; i < $$length; i++) {
-          let a = each_array[i];
-          $$renderer2.push(`<span class="ag ag-edit">⚠ `);
-          Editable($$renderer2, {
-            value: a.agent,
-            onCommit: (v) => updateAllergy(i, { agent: v })
-          });
-          $$renderer2.push(`<!----> `);
-          $$renderer2.select(
-            {
-              class: "ag-sel",
-              value: a.severity,
-              onchange: (e) => updateAllergy(i, { severity: e.currentTarget.value })
-            },
-            ($$renderer3) => {
-              $$renderer3.push(`<!--[-->`);
-              const each_array_1 = ensure_array_like(SEVERITIES);
-              for (let $$index = 0, $$length2 = each_array_1.length; $$index < $$length2; $$index++) {
-                let s = each_array_1[$$index];
-                $$renderer3.option({ value: s }, ($$renderer4) => {
-                  $$renderer4.push(`${escape_html(s)}`);
-                });
-              }
-              $$renderer3.push(`<!--]-->`);
-            }
-          );
-          $$renderer2.push(` `);
-          $$renderer2.select(
-            {
-              class: "ag-sel",
-              value: a.reaction,
-              onchange: (e) => updateAllergy(i, { reaction: e.currentTarget.value })
-            },
-            ($$renderer3) => {
-              $$renderer3.option({ value: "" }, ($$renderer4) => {
-                $$renderer4.push(`— reaction —`);
-              });
-              $$renderer3.push(`<!--[-->`);
-              const each_array_2 = ensure_array_like(REACTIONS);
-              for (let $$index_1 = 0, $$length2 = each_array_2.length; $$index_1 < $$length2; $$index_1++) {
-                let r = each_array_2[$$index_1];
-                $$renderer3.option({ value: r }, ($$renderer4) => {
-                  $$renderer4.push(`${escape_html(r)}`);
-                });
-              }
-              $$renderer3.push(`<!--]-->`);
-              if (a.reaction && !REACTIONS.includes(a.reaction)) {
-                $$renderer3.push("<!--[0-->");
-                $$renderer3.option({ value: a.reaction }, ($$renderer4) => {
-                  $$renderer4.push(`${escape_html(a.reaction)}`);
-                });
-              } else {
-                $$renderer3.push("<!--[-1-->");
-              }
-              $$renderer3.push(`<!--]-->`);
-            }
-          );
-          $$renderer2.push(` <button type="button" class="ag-rm" title="Remove">✕</button></span>`);
-        }
-        $$renderer2.push(`<!--]--> <button type="button" class="ag ag-add">+ Add allergy</button>`);
-      } else {
-        $$renderer2.push("<!--[-1-->");
-        $$renderer2.push(`<!--[-->`);
-        const each_array_3 = ensure_array_like(patient().allergies || []);
-        for (let $$index_3 = 0, $$length = each_array_3.length; $$index_3 < $$length; $$index_3++) {
-          let a = each_array_3[$$index_3];
+        const each_array = ensure_array_like(patient().allergies || []);
+        for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+          let a = each_array[$$index];
           $$renderer2.push(`<span class="ag">⚠ ${escape_html(allergyLabel(a) || a)}</span>`);
         }
         $$renderer2.push(`<!--]-->`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
       }
-      $$renderer2.push(`<!--]--> <span class="ctg">${escape_html(patient().code || "Full")}</span></div></div> <div class="cts"><!--[-->`);
+      $$renderer2.push(`<!--]--> <span class="ctg">${escape_html(patient().code || "Full")}</span></div></div> `);
+      if (store_get($$store_subs ??= {}, "$editMode", editMode)) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="alg-edit-bar"><div class="alg-edit-hd"><span class="alg-edit-ttl">⚠ Allergies</span> <button type="button" class="btn bv">+ Add allergy</button></div> `);
+        if ((patient().allergies || []).length === 0) {
+          $$renderer2.push("<!--[0-->");
+          $$renderer2.push(`<div class="alg-edit-empty">No allergies recorded. Click "+ Add allergy" to add one.</div>`);
+        } else {
+          $$renderer2.push("<!--[-1-->");
+          $$renderer2.push(`<div class="alg-edit-rows"><!--[-->`);
+          const each_array_1 = ensure_array_like((patient().allergies || []).map(normalizeAllergy));
+          for (let i = 0, $$length = each_array_1.length; i < $$length; i++) {
+            let a = each_array_1[i];
+            $$renderer2.push(`<div class="alg-edit-row"><label class="alg-fld"><span class="alg-lbl">Agent</span> <input type="text"${attr("value", a.agent)} placeholder="Drug name"/></label> <label class="alg-fld"><span class="alg-lbl">Severity</span> `);
+            $$renderer2.select(
+              {
+                value: a.severity,
+                onchange: (e) => updateAllergy(i, { severity: e.currentTarget.value })
+              },
+              ($$renderer3) => {
+                $$renderer3.push(`<!--[-->`);
+                const each_array_2 = ensure_array_like(SEVERITIES);
+                for (let $$index_1 = 0, $$length2 = each_array_2.length; $$index_1 < $$length2; $$index_1++) {
+                  let s = each_array_2[$$index_1];
+                  $$renderer3.option({ value: s }, ($$renderer4) => {
+                    $$renderer4.push(`${escape_html(s)}`);
+                  });
+                }
+                $$renderer3.push(`<!--]-->`);
+              }
+            );
+            $$renderer2.push(`</label> <label class="alg-fld"><span class="alg-lbl">Reaction</span> `);
+            $$renderer2.select(
+              {
+                value: a.reaction,
+                onchange: (e) => updateAllergy(i, { reaction: e.currentTarget.value })
+              },
+              ($$renderer3) => {
+                $$renderer3.option({ value: "" }, ($$renderer4) => {
+                  $$renderer4.push(`— select —`);
+                });
+                $$renderer3.push(`<!--[-->`);
+                const each_array_3 = ensure_array_like(REACTIONS);
+                for (let $$index_2 = 0, $$length2 = each_array_3.length; $$index_2 < $$length2; $$index_2++) {
+                  let r = each_array_3[$$index_2];
+                  $$renderer3.option({ value: r }, ($$renderer4) => {
+                    $$renderer4.push(`${escape_html(r)}`);
+                  });
+                }
+                $$renderer3.push(`<!--]-->`);
+                if (a.reaction && !REACTIONS.includes(a.reaction)) {
+                  $$renderer3.push("<!--[0-->");
+                  $$renderer3.option({ value: a.reaction }, ($$renderer4) => {
+                    $$renderer4.push(`${escape_html(a.reaction)}`);
+                  });
+                } else {
+                  $$renderer3.push("<!--[-1-->");
+                }
+                $$renderer3.push(`<!--]-->`);
+              }
+            );
+            $$renderer2.push(`</label> <button type="button" class="alg-rm" title="Remove allergy">✕</button></div>`);
+          }
+          $$renderer2.push(`<!--]--></div>`);
+        }
+        $$renderer2.push(`<!--]--></div>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> <div class="cts"><!--[-->`);
       const each_array_4 = ensure_array_like(TABS);
       for (let $$index_4 = 0, $$length = each_array_4.length; $$index_4 < $$length; $$index_4++) {
         let t = each_array_4[$$index_4];
@@ -3154,7 +3161,7 @@ function Landing($$renderer, $$props) {
     var $$store_subs;
     {
       $$renderer2.push("<!--[-1-->");
-      $$renderer2.push(`<div class="lp"><header class="lp-nav"><div class="lp-brand"><span class="lp-logo">Rx</span> PharmVerify</div> <div class="lp-nav-r"><button class="lp-link">How it works</button> <button class="lp-theme">${escape_html(store_get($$store_subs ??= {}, "$theme", theme) === "dark" ? "Light" : "Dark")}</button> <button class="lp-cta-sm">Sign in</button></div></header> <section class="lp-hero"><div class="lp-hero-l"><div class="lp-eyebrow">Inpatient pharmacy training</div> <h1 class="lp-h1">Train pharmacist judgment, <span class="lp-accent">one order at a time.</span></h1> <p class="lp-lede">Realistic inpatient orders inside an EHR-style workstation. No hints. Real feedback the moment you decide.</p> <div class="lp-cta-row"><button class="lp-cta">Start a case →</button> <button class="lp-cta-ghost">How it works</button></div> <div class="lp-trust"><span>✓ ISMP high-alert meds</span> <span>✓ IDSA &amp; ACC/AHA guidelines</span> <span>✓ Board-prep aligned</span></div></div> <div class="lp-mock"><div class="lp-mock-bar"><span class="lp-dot lp-dot-r"></span> <span class="lp-dot lp-dot-y"></span> <span class="lp-dot lp-dot-g"></span> <span class="lp-mock-title">PharmVerify — Verification Queue</span></div> <div class="lp-mock-body"><div class="lp-mock-side"><div class="lp-mock-sh">QUEUE</div> <div class="lp-mock-si act">Verify Order</div> <div class="lp-mock-si">H&amp;P</div> <div class="lp-mock-si">Labs <span class="lp-mock-bdg">3</span></div> <div class="lp-mock-si">Home Meds</div></div> <div class="lp-mock-main"><div class="lp-mock-pt"><div class="lp-mock-name">MONROE, ELEANOR J <span class="lp-mock-meta">73F · 4S-408B</span></div> <div class="lp-mock-dx">Acute decompensated HFrEF (EF 25%) · CKD III</div></div> <div class="lp-mock-order"><div class="lp-mock-drug">diltiazem 30 MG tablet</div> <div class="lp-mock-line">30 mg, Oral, QID · First dose 0900</div> <div class="lp-mock-flags"><span class="lp-flag lp-flag-r">SCr 1.9 H</span> <span class="lp-flag lp-flag-r">K 5.4 H</span> <span class="lp-flag lp-flag-y">EF 25%</span></div></div> <div class="lp-mock-actions"><button class="lp-mock-btn lp-mock-v" disabled="">Verify</button> <button class="lp-mock-btn lp-mock-r" disabled="">Reject</button> <button class="lp-mock-btn lp-mock-m" disabled="">Message MD</button></div></div></div></div></section> <section class="lp-how" id="how"><h2 class="lp-h2">How it works</h2> <div class="lp-steps"><div class="lp-step reveal-d1"><div class="lp-step-n">1</div> <div class="lp-step-t">Review the chart</div> <div class="lp-step-d">H&amp;P, labs with abnormal flags, home meds, inpatient meds, notes — just like a real EHR.</div></div> <div class="lp-step reveal-d2"><div class="lp-step-n">2</div> <div class="lp-step-t">Decide</div> <div class="lp-step-d">Verify, reject with a reason, or message the prescriber. No hints, no priming.</div></div> <div class="lp-step reveal-d3"><div class="lp-step-n">3</div> <div class="lp-step-t">Get graded feedback</div> <div class="lp-step-d">See the clinical rationale, the guideline, and what an optimal action would have been.</div></div></div></section> <section class="lp-disease"><h2 class="lp-h2">Pick a disease, pick a difficulty</h2> <p class="lp-h2-sub reveal-d1">Cases organized by the conditions you'll actually verify on the floor.</p> <div class="lp-disease-grid"><!--[-->`);
+      $$renderer2.push(`<div class="lp"><header class="lp-nav"><div class="lp-brand"><span class="lp-logo">Rx</span> PharmVerify</div> <div class="lp-nav-r"><button class="lp-link">How it works</button> <button class="lp-theme">${escape_html(store_get($$store_subs ??= {}, "$theme", theme) === "dark" ? "Light" : "Dark")}</button> <button class="lp-cta-sm">Sign in</button></div></header> <section class="lp-hero"><div class="lp-hero-l"><div class="lp-eyebrow">Inpatient pharmacy training</div> <h1 class="lp-h1">Train pharmacist judgment, <span class="lp-accent">one order at a time.</span></h1> <p class="lp-lede">Realistic inpatient orders inside an EHR-style workstation. No hints. Real feedback the moment you decide.</p> <div class="lp-cta-row"><button class="lp-cta">Start a case →</button> <button class="lp-cta-ghost">How it works</button></div> <div class="lp-trust"><span>✓ ISMP high-alert meds</span> <span>✓ IDSA &amp; ACC/AHA guidelines</span> <span>✓ Board-prep aligned</span></div></div> <div class="lp-mock"><div class="lp-mock-bar"><span class="lp-dot lp-dot-r"></span> <span class="lp-dot lp-dot-y"></span> <span class="lp-dot lp-dot-g"></span> <span class="lp-mock-title">PharmVerify — Verification Queue</span></div> <div class="lp-mock-body"><div class="lp-mock-side"><div class="lp-mock-sh">QUEUE</div> <div class="lp-mock-si act">Verify Order</div> <div class="lp-mock-si">H&amp;P</div> <div class="lp-mock-si">Labs <span class="lp-mock-bdg">3</span></div> <div class="lp-mock-si">Home Meds</div></div> <div class="lp-mock-main"><div class="lp-mock-pt"><div class="lp-mock-name">MONROE, ELEANOR J <span class="lp-mock-meta">73F · 4S-408B</span></div> <div class="lp-mock-dx">Acute decompensated HFrEF (EF 25%) · CKD III</div></div> <div class="lp-mock-order"><div class="lp-mock-drug">diltiazem 30 MG tablet</div> <div class="lp-mock-line">30 mg, Oral, QID · First dose 0900</div> <div class="lp-mock-flags"><span class="lp-flag lp-flag-r">SCr 1.9 H</span> <span class="lp-flag lp-flag-r">K 5.4 H</span> <span class="lp-flag lp-flag-y">EF 25%</span></div></div> <div class="lp-mock-actions"><button class="lp-mock-btn lp-mock-v" disabled="">Verify</button> <button class="lp-mock-btn lp-mock-r" disabled="">Reject</button> <button class="lp-mock-btn lp-mock-m" disabled="">Message MD</button></div></div></div></div></section> <section class="lp-shots"><h2 class="lp-h2">A look inside</h2> <div class="lp-shot-grid"><figure class="lp-shot reveal-d1"><img src="/home.png" alt="Home dashboard with disease practice tiles and stats" loading="lazy"/> <figcaption>Home dashboard — pick a disease, track your stats</figcaption></figure> <figure class="lp-shot reveal-d2"><img src="/verify.png" alt="Order verification screen inside the EHR-style workstation" loading="lazy"/> <figcaption>Verify, reject, or message — with the full chart at hand</figcaption></figure> <figure class="lp-shot reveal-d3"><img src="/hp.png" alt="Patient H and P chart view with vitals and exam" loading="lazy"/> <figcaption>Real chart context — H&amp;P, vitals, PMH, home meds</figcaption></figure> <figure class="lp-shot reveal-d4"><img src="/edit-mode.png" alt="Preceptor edit mode with editable allergies and labs" loading="lazy"/> <figcaption>Preceptor edit mode — tweak any field, build cases live</figcaption></figure></div></section> <section class="lp-how" id="how"><h2 class="lp-h2">How it works</h2> <div class="lp-steps"><div class="lp-step reveal-d1"><div class="lp-step-n">1</div> <div class="lp-step-t">Review the chart</div> <div class="lp-step-d">H&amp;P, labs with abnormal flags, home meds, inpatient meds, notes — just like a real EHR.</div></div> <div class="lp-step reveal-d2"><div class="lp-step-n">2</div> <div class="lp-step-t">Decide</div> <div class="lp-step-d">Verify, reject with a reason, or message the prescriber. No hints, no priming.</div></div> <div class="lp-step reveal-d3"><div class="lp-step-n">3</div> <div class="lp-step-t">Get graded feedback</div> <div class="lp-step-d">See the clinical rationale, the guideline, and what an optimal action would have been.</div></div></div></section> <section class="lp-disease"><h2 class="lp-h2">Pick a disease, pick a difficulty</h2> <p class="lp-h2-sub reveal-d1">Cases organized by the conditions you'll actually verify on the floor.</p> <div class="lp-disease-grid"><!--[-->`);
       const each_array = ensure_array_like([
         ["❤", "Heart Failure", false],
         ["🫁", "Pneumonia (CAP)", false],

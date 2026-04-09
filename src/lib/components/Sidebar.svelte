@@ -17,7 +17,9 @@
     theme.update(t => {
       const next = t === 'dark' ? 'light' : 'dark';
       localStorage.setItem('pv-theme', next);
+      document.documentElement.classList.add('theme-fading');
       document.documentElement.setAttribute('data-theme', next);
+      setTimeout(() => document.documentElement.classList.remove('theme-fading'), 500);
       return next;
     });
   }

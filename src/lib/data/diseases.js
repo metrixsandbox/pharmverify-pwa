@@ -2,14 +2,25 @@
 // Each disease has a patient record + orders grouped by difficulty (easy/medium/hard).
 // Easy = clearly wrong orders. Medium = mix of correct/incorrect. Hard = graded spectrum.
 
+export const PHASES = [
+  { id: 'admission', label: 'Admission (Day 1)',       short: 'Day 1',   desc: 'Initial workup, empiric therapy, GDMT decisions' },
+  { id: 'mid',       label: 'Reassessment (Day 3\u20134)', short: 'Day 3\u20134', desc: 'Therapy response, dose adjustments, transitions' },
+  { id: 'discharge', label: 'Discharge (Day 5\u20137)',    short: 'Day 5\u20137', desc: 'Oral conversion, med rec, discharge planning' }
+];
+
 export const DISEASES = [
-  { id: 'hf',         label: 'Heart Failure',           icon: '\u2764',    desc: 'Acute decompensated HFrEF' },
-  { id: 'cap',        label: 'Pneumonia (CAP)',         icon: '\u{1FAC1}', desc: 'Severe community-acquired pneumonia' },
-  { id: 'uti',        label: 'UTI / Pyelonephritis',    icon: '\u{1F48A}', desc: 'Complicated pyelonephritis' },
+  { id: 'hf',         label: 'Heart Failure',           icon: '\u2764',    desc: 'Acute decompensated HFrEF',
+    phases: ['admission', 'mid', 'discharge'] },
+  { id: 'cap',        label: 'Pneumonia (CAP)',         icon: '\u{1FAC1}', desc: 'Severe community-acquired pneumonia',
+    phases: ['admission'] },
+  { id: 'uti',        label: 'UTI / Pyelonephritis',    icon: '\u{1F48A}', desc: 'Complicated pyelonephritis',
+    phases: ['admission'] },
   { id: 'copd',       label: 'COPD Exacerbation',       icon: '\u{1F32C}', desc: 'Coming soon' },
   { id: 'dka',        label: 'DKA',                     icon: '\u{1F4A7}', desc: 'Coming soon' },
-  { id: 'afib',       label: 'Atrial Fibrillation',     icon: '\u{1F493}', desc: 'Coming soon' },
-  { id: 'sepsis',     label: 'Sepsis',                  icon: '\u{1F525}', desc: 'Coming soon' },
+  { id: 'afib',       label: 'Atrial Fibrillation',     icon: '\u{1F493}', desc: 'Coming soon',
+    phases: ['admission'] },
+  { id: 'sepsis',     label: 'Sepsis',                  icon: '\u{1F525}', desc: 'Coming soon',
+    phases: ['admission'] },
   { id: 'aki',        label: 'Acute Kidney Injury',     icon: '\u{1FAC0}', desc: 'Coming soon' },
   { id: 'vte',        label: 'DVT / PE',                icon: '\u{1FA78}', desc: 'Coming soon' },
   { id: 'cellulitis', label: 'Cellulitis / SSTI',       icon: '\u{1F9A0}', desc: 'Coming soon' }
@@ -252,6 +263,434 @@ const HF_HARD = [
         { id: 'r2', text: 'Patient has a spironolactone allergy', correct: false },
         { id: 'r3', text: 'Dose is too high for HFrEF', correct: false },
         { id: 'r4', text: 'Duplicate therapy with another diuretic', correct: false }
+      ]
+    }
+  }
+];
+
+// ============================================================================
+// HEART FAILURE — Day 3-4 Reassessment
+// ============================================================================
+const HF_MID_PATIENT = {
+  D_HF_MID: {
+    name: 'MONROE, ELEANOR J',
+    mrn: '01102045',
+    dob: '03/14/1952',
+    age: '73F',
+    weight: '74 kg',
+    height: '162 cm',
+    allergies: ['Sulfa (rash)'],
+    room: '4S-408B',
+    admitDate: '04/05/2026',
+    attending: 'Chen, William, MD',
+    dx: 'Acute decompensated HFrEF (I50.23), CKD Stage III',
+    code: 'Full',
+    hp: {
+      cc: 'Worsening dyspnea and leg swelling x 5 days',
+      hpi: '73 y/o F with HFrEF (EF 25%, ischemic cardiomyopathy), CKD Stage III, and T2DM admitted 04/05 for ADHF with volume overload. Now hospital day 3. Responding to IV diuresis — net negative 4.2 L over 48 hrs. Weight down from 78 kg to 74 kg. Orthopnea improved, now sleeping at 2 pillows. Edema improving. SCr peaked at 1.9 on day 2, now trending down to 1.6. Team considering transition from IV to oral diuretics and GDMT optimization.',
+      pmh: ['HFrEF (EF 25%, ischemic)', 'CAD s/p CABG 2019', 'CKD Stage III (baseline SCr 1.4)', 'T2DM', 'HTN', 'Hyperlipidemia'],
+      meds: ['Carvedilol 12.5 mg PO BID', 'Sacubitril/valsartan 49/51 mg PO BID', 'Spironolactone 25 mg PO daily', 'Empagliflozin 10 mg PO daily', 'Furosemide 40 mg PO daily', 'Atorvastatin 40 mg PO QHS', 'Metformin 500 mg PO BID'],
+      exam: {
+        vitals: 'T 98.4 | HR 76 | BP 118/72 | RR 18 | SpO2 96% RA',
+        cv: 'RRR, S3 resolved, JVD 8 cm',
+        pulm: 'Scattered bibasilar crackles, improved from admission',
+        ext: '1+ pitting edema bilateral ankles (down from 3+)',
+        neuro: 'A&O x4'
+      },
+      assessment: 'ADHF with improving volume status on IV diuresis. Cardiorenal now improving (SCr trending down). Ready for diuretic transition and GDMT review.',
+      plan: [
+        '1. IV-to-PO diuretic transition — trial oral furosemide at higher than home dose.',
+        '2. Resume/optimize GDMT: consider ARNI restart, continue beta-blocker and MRA.',
+        '3. Hold metformin until SCr < 1.5.',
+        '4. Daily weights, strict I/O, BMP in AM.',
+        '5. Dietary/pharmacy education before discharge.'
+      ]
+    },
+    labs: {
+      '04/07 0600': { Na: '136', K: '3.6', Cl: '100', CO2: '24', BUN: ['32','H'], SCr: ['1.6','H'], Glucose: ['142','H'], Mg: '1.8', 'BNP': ['980','H'], WBC: '6.2', Hgb: ['10.8','L'], Plt: '218' },
+      '04/06 0600': { Na: '134', K: '3.4', Cl: '99', CO2: '23', BUN: ['36','H'], SCr: ['1.9','H'], Glucose: ['148','H'], Mg: '1.7', 'BNP': ['1440','H'] },
+      '04/05 0600': { Na: ['132','L'], K: '4.0', Cl: '98', CO2: '26', BUN: ['38','H'], SCr: ['1.7','H'], Glucose: ['156','H'], Mg: '2.0', 'BNP': ['2240','H'], Troponin: '<0.01', WBC: '7.8', Hgb: ['11.2','L'], Plt: '210' }
+    },
+    notes: [
+      { dt: '04/07 0700', author: 'Chen, William, MD', type: 'Progress Note', text: 'S: Feels much better. Sleeping in bed flat last night. Urine output excellent.\nO: Wt 74 kg (down 4 kg). JVD improved. Crackles resolving. LE edema 1+. BNP 980 (from 2240). SCr trending down 1.9 → 1.6.\nA/P: Responding well to IV diuresis. Plan IV-to-PO transition today — furosemide 80 mg PO BID. Resume ARNI if tolerated. Continue carvedilol and spironolactone. Recheck BMP in AM.' },
+      { dt: '04/06 0700', author: 'Chen, William, MD', type: 'Progress Note', text: 'S: Mild improvement in dyspnea. Still orthopneic.\nO: Wt 76 kg. Net -2.1L overnight. SCr bumped to 1.9 — cardiorenal. K+ 3.4.\nA/P: Continue IV furosemide. Add potassium repletion PRN. Hold ARNI until SCr improves. Monitor.' },
+      { dt: '04/05 0700', author: 'Chen, William, MD', type: 'Progress Note', text: 'S: Dyspneic, orthopneic. Cannot lie flat.\nO: JVD, bibasilar crackles, 3+ LE edema. BNP 2240. SCr bumped 1.4 -> 1.7.\nA/P: ADHF with volume overload and cardiorenal. Plan IV loop diuresis. Will review home GDMT.' }
+    ],
+    inpatientMeds: [
+      { drug: 'Furosemide', dose: '80 mg', route: 'IV', freq: 'Q12H', sched: ['0900','2100'], status: 'Active' },
+      { drug: 'Carvedilol', dose: '12.5 mg', route: 'PO', freq: 'BID', sched: ['0900','2100'], status: 'Active' },
+      { drug: 'Spironolactone', dose: '25 mg', route: 'PO', freq: 'Daily', sched: ['0900'], status: 'Active' },
+      { drug: 'Atorvastatin', dose: '40 mg', route: 'PO', freq: 'QHS', sched: ['2100'], status: 'Active' },
+      { drug: 'Empagliflozin', dose: '10 mg', route: 'PO', freq: 'Daily', sched: ['0900'], status: 'Active' },
+      { drug: 'Potassium chloride', dose: '40 mEq', route: 'PO', freq: 'PRN K<3.5', sched: [], status: 'Active' }
+    ],
+    homeMeds: [
+      { drug: 'Atorvastatin 40 mg', freq: 'QHS', status: 'Active' },
+      { drug: 'Carvedilol 12.5 mg', freq: 'BID', status: 'Active' },
+      { drug: 'Empagliflozin 10 mg', freq: 'Daily', status: 'Active' },
+      { drug: 'Furosemide 40 mg', freq: 'Daily', status: 'Active' },
+      { drug: 'Metformin 500 mg', freq: 'BID', status: 'Active' },
+      { drug: 'Sacubitril/valsartan 49/51 mg', freq: 'BID', status: 'Active' },
+      { drug: 'Spironolactone 25 mg', freq: 'Daily', status: 'Active' }
+    ],
+    imaging: [
+      { type: 'Chest X-ray (PA/Lateral)', date: '04/05/2026', orderedBy: 'Chen, William, MD', readBy: 'Torres, L, MD', indication: 'Dyspnea, HF exacerbation', findings: 'Cardiomegaly. Bilateral pleural effusions, small. Cephalization of pulmonary vasculature. No consolidation.', impression: 'Findings consistent with acute decompensated heart failure.' },
+      { type: 'Chest X-ray (Portable)', date: '04/07/2026', orderedBy: 'Chen, William, MD', readBy: 'Torres, L, MD', indication: 'Interval change', findings: 'Heart size unchanged. Pleural effusions smaller bilaterally. Improved pulmonary vascular congestion.', impression: 'Interval improvement in pulmonary edema.' }
+    ],
+    cardio: {
+      ekg: { date: '04/05/2026', readBy: 'Kim, R, MD', rhythm: 'Normal sinus rhythm', interpretation: 'NSR at 88 bpm. Left ventricular hypertrophy by voltage criteria. No acute ST-T wave changes.', intervals: [
+        { name: 'HR', value: '88 bpm', normal: '60-100', flag: '' },
+        { name: 'PR', value: '182 ms', normal: '120-200', flag: '' },
+        { name: 'QRS', value: '98 ms', normal: '60-110', flag: '' },
+        { name: 'QTc', value: '448 ms', normal: '350-460', flag: '' }
+      ]},
+      echo: { date: '04/05/2026', readBy: 'Kim, R, MD', impression: 'Severely reduced LVEF 25%. LV dilation. Moderate mitral regurgitation. Estimated RVSP 48 mmHg.', findings: [
+        { name: 'LVEF', value: '25%' },
+        { name: 'LVIDd', value: '6.2 cm (dilated)' },
+        { name: 'LA', value: '4.8 cm (dilated)' },
+        { name: 'MR', value: 'Moderate' },
+        { name: 'RVSP', value: '48 mmHg' },
+        { name: 'RV function', value: 'Mildly reduced' }
+      ]}
+    }
+  }
+};
+
+const HF_MID_EASY = [
+  mk('HF_ME1', 'D_HF_MID',
+    'metformin 500 MG tablet',
+    '500 mg, Oral, BID, Resume home med',
+    '500 mg', 'Oral', 'BID',
+    {
+      correctAction: 'reject',
+      explanation: 'Metformin should be held when SCr is elevated above baseline and actively fluctuating. Current SCr is 1.6 (peaked at 1.9, baseline 1.4). There is ongoing risk of lactic acidosis in the setting of renal impairment and heart failure with recent cardiorenal syndrome. Per guidelines, metformin should not be restarted until renal function is stable and eGFR >30.',
+      rejectReasons: [
+        { id: 'r1', text: 'SCr still elevated above baseline (1.6 vs 1.4) with recent peak at 1.9', correct: true },
+        { id: 'r2', text: 'Risk of lactic acidosis in setting of cardiorenal syndrome', correct: true },
+        { id: 'r3', text: 'Should wait until renal function stabilizes before restarting', correct: true },
+        { id: 'r4', text: 'Metformin is contraindicated in all heart failure', correct: false },
+        { id: 'r5', text: 'Patient has a metformin allergy', correct: false },
+        { id: 'r6', text: 'Dose is too high', correct: false }
+      ]
+    }
+  ),
+  mk('HF_ME2', 'D_HF_MID',
+    'digoxin 0.25 MG tablet',
+    '0.25 mg, Oral, Daily',
+    '0.25 mg', 'Oral', 'Daily',
+    {
+      correctAction: 'reject',
+      explanation: 'Digoxin 0.25 mg daily is too high a starting dose for a 73-year-old woman with CKD (SCr 1.6). Digoxin is renally cleared and levels are influenced by weight, age, and renal function. Target digoxin levels in HFrEF are 0.5-0.9 ng/mL. In this patient, 0.125 mg daily or even 0.125 mg every other day would be more appropriate. Starting at 0.25 mg risks toxicity.',
+      rejectReasons: [
+        { id: 'r1', text: 'Dose too high for age 73, CKD, weight 74 kg', correct: true },
+        { id: 'r2', text: 'Risk of digoxin toxicity — renally cleared drug with impaired function', correct: true },
+        { id: 'r3', text: 'Should start at 0.125 mg daily or QOD in this patient', correct: true },
+        { id: 'r4', text: 'Digoxin is contraindicated in HFrEF', correct: false },
+        { id: 'r5', text: 'Oral digoxin is not available', correct: false },
+        { id: 'r6', text: 'Patient has a digoxin allergy', correct: false }
+      ]
+    }
+  )
+];
+
+const HF_MID_MEDIUM = [
+  mk('HF_MM1', 'D_HF_MID',
+    'furosemide 80 MG tablet',
+    '80 mg, Oral, BID — IV-to-PO transition',
+    '80 mg', 'Oral', 'BID',
+    {
+      correctAction: 'verify',
+      explanation: 'Transitioning from IV furosemide 80 mg Q12H to oral furosemide 80 mg BID is appropriate at this stage. The patient has responded well to IV diuresis (net -4.2L, weight down 4 kg, BNP trending down). Oral bioavailability of furosemide is ~50%, so an equivalent oral dose would technically be higher, but starting at 80 mg PO BID (same as the IV dose) is standard practice since oral absorption improves as gut edema resolves. Monitor weight and I/O closely.',
+      rejectReasons: [
+        { id: 'r1', text: 'PO bioavailability is too low — patient needs to stay on IV', correct: false },
+        { id: 'r2', text: 'Dose is too high', correct: false },
+        { id: 'r3', text: 'Patient has a loop diuretic allergy', correct: false },
+        { id: 'r4', text: 'BID dosing is too frequent', correct: false }
+      ]
+    }
+  ),
+  mk('HF_MM2', 'D_HF_MID',
+    'sacubitril/valsartan (ENTRESTO) 49/51 MG tablet',
+    '49/51 mg, Oral, BID — Resume home dose',
+    '49/51 mg', 'Oral', 'BID',
+    {
+      correctAction: 'verify',
+      explanation: 'Resuming ARNI at the home dose is now appropriate. SCr has improved from peak of 1.9 to 1.6 and is trending toward baseline. The patient is hemodynamically stable (BP 118/72). ARNI was held during acute cardiorenal worsening but should be restarted as soon as renal function stabilizes. Continued holding delays GDMT optimization and worsens long-term outcomes.',
+      rejectReasons: [
+        { id: 'r1', text: 'SCr is still too elevated to restart ARNI', correct: false },
+        { id: 'r2', text: 'ARNI is contraindicated with spironolactone', correct: false },
+        { id: 'r3', text: 'Blood pressure is too low', correct: false },
+        { id: 'r4', text: 'Should only be restarted after discharge', correct: false }
+      ]
+    }
+  ),
+  mk('HF_MM3', 'D_HF_MID',
+    'potassium chloride 40 MEQ IV infusion',
+    '40 mEq, IV, x1 dose — K+ 3.6',
+    '40 mEq', 'IV', 'Once',
+    {
+      correctAction: 'message',
+      explanation: 'K+ is 3.6 — below 4.0 but not critically low. In an HF patient on spironolactone with improving renal function, aggressive IV potassium repletion may not be necessary. Oral repletion (20-40 mEq PO) is preferred when K+ >3.0 and the patient is tolerating PO. IV potassium is painful, carries more risk, and is generally reserved for K+ <3.0 or symptomatic hypokalemia. Message the team to clarify the urgency and suggest PO route.',
+      rejectReasons: [
+        { id: 'r1', text: 'K+ 3.6 does not require IV repletion — PO preferred', correct: true },
+        { id: 'r2', text: 'Patient on spironolactone — K+ will likely self-correct as ARNI resumed', correct: true },
+        { id: 'r3', text: 'IV potassium has higher risk (phlebitis, cardiac effects) than necessary here', correct: true },
+        { id: 'r4', text: 'Potassium is normal at 3.6', correct: false },
+        { id: 'r5', text: 'Patient has a potassium allergy', correct: false }
+      ]
+    },
+    { priority: 'Stat' }
+  )
+];
+
+const HF_MID_HARD = [
+  {
+    ...mk('HF_MH1', 'D_HF_MID',
+      'carvedilol 25 MG tablet',
+      '25 mg, Oral, BID — Uptitrate from 12.5 mg',
+      '25 mg', 'Oral', 'BID',
+      null, { times: ['0900','2100'] }
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'suboptimal', message: 'Uptitrating beta-blocker during an acute HF hospitalization is generally not recommended. While the patient is improving, she is still in the acute phase with recent cardiorenal syndrome. Beta-blocker uptitration should occur in the outpatient setting after euvolemia is achieved and stable for 1-2 weeks. Verifying this risks hemodynamic decompensation.' },
+        reject: { grade: 'acceptable', message: 'Rejecting is defensible — inpatient beta-blocker uptitration during ADHF carries risk. However, the ideal response is to message the team to discuss timing, since uptitration itself is a good long-term goal.' },
+        message: { grade: 'optimal', message: 'Best answer. The goal of reaching target-dose carvedilol is correct, but timing matters. Messaging to recommend deferring uptitration to the outpatient setting (2-4 weeks post-discharge) demonstrates excellent clinical judgment.' }
+      },
+      explanation: 'Beta-blocker uptitration should wait for euvolemia and clinical stability — defer to outpatient.',
+      rejectReasons: [
+        { id: 'r1', text: 'Inpatient uptitration during acute decompensation increases risk', correct: true },
+        { id: 'r2', text: 'Patient still recovering from cardiorenal syndrome', correct: true },
+        { id: 'r3', text: 'Carvedilol 25 mg is above maximum dose', correct: false },
+        { id: 'r4', text: 'Patient has a beta-blocker allergy', correct: false }
+      ]
+    }
+  },
+  {
+    ...mk('HF_MH2', 'D_HF_MID',
+      'hydralazine 25 MG tablet',
+      '25 mg, Oral, TID — Add for BP management',
+      '25 mg', 'Oral', 'TID',
+      null
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'suboptimal', message: 'Hydralazine/isosorbide dinitrate (H-ISDN) has a role in HFrEF — specifically in Black patients or those who cannot tolerate ACEI/ARB/ARNI. However, this patient is already on sacubitril/valsartan. Adding hydralazine alone (without ISDN) for BP that is already well-controlled (118/72) has no guideline basis. Ordering hydralazine monotherapy when BP is at goal is not appropriate.' },
+        reject: { grade: 'acceptable', message: 'Rejecting is defensible. Hydralazine alone is not GDMT for HFrEF, the patient is on ARNI, and BP is at goal. However, messaging to clarify the indication is the most collaborative approach.' },
+        message: { grade: 'optimal', message: 'Best answer. The clinical question is: what is the indication? If for BP, it is already controlled. If for GDMT, H-ISDN requires both components and is only added when ACEI/ARB/ARNI cannot be used. Messaging clarifies the rationale before acting.' }
+      },
+      explanation: 'Hydralazine alone is not GDMT — BP is at goal and patient is on ARNI. Clarify indication.',
+      rejectReasons: [
+        { id: 'r1', text: 'BP is already well-controlled at 118/72', correct: true },
+        { id: 'r2', text: 'Hydralazine alone (without ISDN) is not guideline-directed for HFrEF', correct: true },
+        { id: 'r3', text: 'Patient already on ARNI — duplicate vasodilation without indication', correct: true },
+        { id: 'r4', text: 'Hydralazine is contraindicated in HF', correct: false }
+      ]
+    }
+  }
+];
+
+// ============================================================================
+// HEART FAILURE — Discharge (Day 5-7)
+// ============================================================================
+const HF_DC_PATIENT = {
+  D_HF_DC: {
+    name: 'MONROE, ELEANOR J',
+    mrn: '01102045',
+    dob: '03/14/1952',
+    age: '73F',
+    weight: '71 kg',
+    height: '162 cm',
+    allergies: ['Sulfa (rash)'],
+    room: '4S-408B',
+    admitDate: '04/05/2026',
+    attending: 'Chen, William, MD',
+    dx: 'Acute decompensated HFrEF (I50.23), CKD Stage III — discharge planning',
+    code: 'Full',
+    hp: {
+      cc: 'Worsening dyspnea and leg swelling x 5 days (resolved)',
+      hpi: '73 y/o F with HFrEF admitted 04/05 for ADHF. Now hospital day 6. Achieved dry weight (~71 kg, down 7 kg from admission). Transitioned to oral diuretics on day 4 — weight stable x2 days on PO furosemide 80 mg BID. SCr returned to baseline 1.4. GDMT restarted and optimized. Team planning discharge tomorrow with close cardiology follow-up in 7 days.',
+      pmh: ['HFrEF (EF 25%, ischemic)', 'CAD s/p CABG 2019', 'CKD Stage III (baseline SCr 1.4)', 'T2DM', 'HTN', 'Hyperlipidemia'],
+      meds: ['Carvedilol 12.5 mg PO BID', 'Sacubitril/valsartan 49/51 mg PO BID', 'Spironolactone 25 mg PO daily', 'Empagliflozin 10 mg PO daily', 'Furosemide 40 mg PO daily', 'Atorvastatin 40 mg PO QHS', 'Metformin 500 mg PO BID'],
+      exam: {
+        vitals: 'T 98.2 | HR 72 | BP 112/68 | RR 16 | SpO2 97% RA',
+        cv: 'RRR, no S3, JVP 6 cm',
+        pulm: 'Clear bilaterally',
+        ext: 'Trace pedal edema',
+        neuro: 'A&O x4'
+      },
+      assessment: 'ADHF resolved. Euvolemic on oral diuretics. GDMT optimized. Ready for discharge with close follow-up.',
+      plan: [
+        '1. Discharge tomorrow. Furosemide 80 mg PO BID (up from home 40 mg daily).',
+        '2. Resume all home GDMT. Resume metformin (SCr back to baseline).',
+        '3. Daily weights at home — call if gain >3 lbs in 1 day or >5 lbs in 1 week.',
+        '4. Sodium restriction 2g, fluid restriction 1.5L.',
+        '5. Cardiology follow-up in 7 days. PCP in 14 days.',
+        '6. Pharmacy medication reconciliation and education.'
+      ]
+    },
+    labs: {
+      '04/10 0600': { Na: '138', K: '4.2', Cl: '102', CO2: '26', BUN: '22', SCr: '1.4', Glucose: ['138','H'], Mg: '2.1', 'BNP': ['420','H'], WBC: '5.8', Hgb: ['10.5','L'], Plt: '225' },
+      '04/09 0600': { Na: '137', K: '4.0', Cl: '101', CO2: '25', BUN: '24', SCr: '1.4', Glucose: ['145','H'], Mg: '2.0', 'BNP': ['580','H'] },
+      '04/07 0600': { Na: '136', K: '3.6', Cl: '100', CO2: '24', BUN: ['32','H'], SCr: ['1.6','H'], Glucose: ['142','H'], Mg: '1.8', 'BNP': ['980','H'] }
+    },
+    notes: [
+      { dt: '04/10 0800', author: 'Chen, William, MD', type: 'Progress Note', text: 'S: Feels well. No dyspnea at rest or exertion on unit. Sleeping flat.\nO: Wt 71 kg (stable x2 days). Euvolemic exam. SCr 1.4 (baseline). BNP 420 (from 2240). Labs stable.\nA/P: Euvolemic on PO furosemide 80 BID. Discharge tomorrow. Finalize med rec. Pharmacy education today.' },
+      { dt: '04/09 0700', author: 'Chen, William, MD', type: 'Progress Note', text: 'S: Continued improvement.\nO: Wt 71 kg. SCr stable 1.4. Tolerating PO diuretics well.\nA/P: On track for discharge. Restart metformin today. Adjust discharge diuretic dosing.' },
+      { dt: '04/07 0700', author: 'Chen, William, MD', type: 'Progress Note', text: 'S: Feels much better. Sleeping in bed flat last night.\nO: Wt 74 kg. BNP 980. SCr 1.6 trending down.\nA/P: Responding. Plan IV-to-PO transition today.' }
+    ],
+    inpatientMeds: [
+      { drug: 'Furosemide', dose: '80 mg', route: 'PO', freq: 'BID', sched: ['0900','2100'], status: 'Active' },
+      { drug: 'Carvedilol', dose: '12.5 mg', route: 'PO', freq: 'BID', sched: ['0900','2100'], status: 'Active' },
+      { drug: 'Sacubitril/valsartan', dose: '49/51 mg', route: 'PO', freq: 'BID', sched: ['0900','2100'], status: 'Active' },
+      { drug: 'Spironolactone', dose: '25 mg', route: 'PO', freq: 'Daily', sched: ['0900'], status: 'Active' },
+      { drug: 'Empagliflozin', dose: '10 mg', route: 'PO', freq: 'Daily', sched: ['0900'], status: 'Active' },
+      { drug: 'Atorvastatin', dose: '40 mg', route: 'PO', freq: 'QHS', sched: ['2100'], status: 'Active' },
+      { drug: 'Metformin', dose: '500 mg', route: 'PO', freq: 'BID', sched: ['0900','2100'], status: 'Active' }
+    ],
+    homeMeds: [
+      { drug: 'Atorvastatin 40 mg', freq: 'QHS', status: 'Active' },
+      { drug: 'Carvedilol 12.5 mg', freq: 'BID', status: 'Active' },
+      { drug: 'Empagliflozin 10 mg', freq: 'Daily', status: 'Active' },
+      { drug: 'Furosemide 40 mg', freq: 'Daily', status: 'Active' },
+      { drug: 'Metformin 500 mg', freq: 'BID', status: 'Active' },
+      { drug: 'Sacubitril/valsartan 49/51 mg', freq: 'BID', status: 'Active' },
+      { drug: 'Spironolactone 25 mg', freq: 'Daily', status: 'Active' }
+    ]
+  }
+};
+
+const HF_DC_EASY = [
+  mk('HF_DE1', 'D_HF_DC',
+    'furosemide 40 MG tablet',
+    '40 mg, Oral, Daily — Discharge (resume home dose)',
+    '40 mg', 'Oral', 'Daily',
+    {
+      correctAction: 'reject',
+      explanation: 'Sending the patient home on her pre-admission furosemide dose (40 mg daily) is a common discharge error. She was admitted for decompensation ON that dose — it was clearly insufficient. The inpatient team stabilized her on 80 mg BID. Discharge diuretic dose should be at least the effective inpatient oral dose. Sending home at the old dose virtually guarantees readmission.',
+      rejectReasons: [
+        { id: 'r1', text: 'Patient decompensated on this dose — it was insufficient', correct: true },
+        { id: 'r2', text: 'Discharge dose should reflect the effective inpatient oral dose (80 mg BID)', correct: true },
+        { id: 'r3', text: 'High risk for 30-day HF readmission at sub-therapeutic diuretic dose', correct: true },
+        { id: 'r4', text: 'Furosemide is no longer indicated', correct: false },
+        { id: 'r5', text: 'Patient has a loop diuretic allergy', correct: false },
+        { id: 'r6', text: 'Daily dosing is never appropriate for furosemide', correct: false }
+      ]
+    }
+  ),
+  mk('HF_DE2', 'D_HF_DC',
+    'amlodipine 5 MG tablet',
+    '5 mg, Oral, Daily — Add for BP',
+    '5 mg', 'Oral', 'Daily',
+    {
+      correctAction: 'reject',
+      explanation: 'Amlodipine (DHP CCB) is not part of GDMT for HFrEF and is generally avoided. While DHP CCBs are not as harmful as non-DHPs (diltiazem/verapamil) in HFrEF, they are not recommended and may worsen outcomes when added without clear indication. This patient\'s BP is well controlled at 112/68 on GDMT. Adding amlodipine at discharge for a patient whose BP is already at goal on ARNI + beta-blocker is inappropriate.',
+      rejectReasons: [
+        { id: 'r1', text: 'BP already at goal (112/68) on current GDMT', correct: true },
+        { id: 'r2', text: 'Amlodipine is not guideline-directed therapy for HFrEF', correct: true },
+        { id: 'r3', text: 'Adding unnecessary antihypertensive risks hypotension', correct: true },
+        { id: 'r4', text: 'Amlodipine is contraindicated in all heart failure', correct: false },
+        { id: 'r5', text: 'Patient has a CCB allergy', correct: false }
+      ]
+    }
+  )
+];
+
+const HF_DC_MEDIUM = [
+  mk('HF_DM1', 'D_HF_DC',
+    'furosemide 80 MG tablet',
+    '80 mg, Oral, BID — Discharge prescription',
+    '80 mg', 'Oral', 'BID',
+    {
+      correctAction: 'verify',
+      explanation: 'Discharging on furosemide 80 mg PO BID is appropriate. This matches the effective inpatient oral dose that achieved euvolemia. Patient weight has been stable at dry weight for 2 days on this regimen. Outpatient dose titration down can occur at the 7-day cardiology follow-up after confirming continued stability.',
+      rejectReasons: [
+        { id: 'r1', text: 'Dose is too high for outpatient use', correct: false },
+        { id: 'r2', text: 'Should go back to home dose at discharge', correct: false },
+        { id: 'r3', text: 'BID dosing is unnecessary', correct: false }
+      ]
+    }
+  ),
+  mk('HF_DM2', 'D_HF_DC',
+    'metformin 1000 MG tablet',
+    '1000 mg, Oral, BID — Discharge (uptitrate from home 500 mg)',
+    '1000 mg', 'Oral', 'BID',
+    {
+      correctAction: 'reject',
+      explanation: 'While restarting metformin is appropriate now (SCr 1.4, at baseline), uptitrating from 500 mg BID to 1000 mg BID at discharge is not. Dose changes to chronic medications should not be made at hospital discharge — this is a high-risk transition point. The patient just recovered from cardiorenal syndrome. Resume home dose and let the outpatient provider uptitrate in a controlled setting.',
+      rejectReasons: [
+        { id: 'r1', text: 'Should restart at home dose, not uptitrate at discharge', correct: true },
+        { id: 'r2', text: 'Discharge is a high-risk transition — minimize medication changes', correct: true },
+        { id: 'r3', text: 'Recent cardiorenal syndrome warrants conservative approach', correct: true },
+        { id: 'r4', text: 'Metformin is permanently contraindicated after AKI', correct: false },
+        { id: 'r5', text: '1000 mg exceeds maximum dose', correct: false }
+      ]
+    }
+  ),
+  mk('HF_DM3', 'D_HF_DC',
+    'enoxaparin 40 MG injection',
+    '40 mg, Subcut, Daily — VTE prophylaxis (continue through discharge)',
+    '40 mg', 'Subcut', 'Daily',
+    {
+      correctAction: 'reject',
+      explanation: 'VTE prophylaxis with enoxaparin was appropriate during the inpatient stay while the patient was volume-overloaded and less mobile. However, continuing injectable anticoagulation through discharge is not indicated. The patient is now ambulatory, euvolemic, and ready for discharge. Extended-duration VTE prophylaxis post-discharge is only indicated in specific populations (e.g., post-surgical, active malignancy) per CHEST guidelines. Discontinue at discharge.',
+      rejectReasons: [
+        { id: 'r1', text: 'VTE prophylaxis should stop at discharge — patient is now ambulatory', correct: true },
+        { id: 'r2', text: 'No indication for extended-duration VTE prophylaxis in this patient', correct: true },
+        { id: 'r3', text: 'Injectable anticoagulant unnecessary in ambulatory outpatient', correct: true },
+        { id: 'r4', text: 'Dose is wrong for the patient weight', correct: false },
+        { id: 'r5', text: 'Patient has a heparin allergy', correct: false }
+      ]
+    }
+  )
+];
+
+const HF_DC_HARD = [
+  {
+    ...mk('HF_DH1', 'D_HF_DC',
+      'metolazone 2.5 MG tablet',
+      '2.5 mg, Oral, PRN weight gain >3 lbs — Discharge',
+      '2.5 mg', 'Oral', 'PRN',
+      null
+    ),
+    teaching: {
+      correctAction: 'verify',
+      detailedFeedback: {
+        verify: { grade: 'optimal', message: 'Correct. Prescribing metolazone 2.5 mg PRN for breakthrough fluid retention (weight gain >3 lbs) is excellent anticipatory prescribing for a patient with recurrent ADHF admissions. Thiazide augmentation of loop diuretics is a well-established rescue strategy. Having it available at home empowers the patient to act early before decompensation requires hospitalization.' },
+        reject: { grade: 'incorrect', message: 'Rejecting this order removes a valuable safety net. PRN metolazone with clear parameters is guideline-concordant HF management and helps prevent readmission.' },
+        message: { grade: 'acceptable', message: 'Confirming the plan is reasonable, but the order is well-constructed with appropriate PRN parameters. This is a validated approach to HF readmission prevention.' }
+      },
+      explanation: 'PRN metolazone at discharge is excellent anticipatory prescribing for HF readmission prevention.',
+      rejectReasons: [
+        { id: 'r1', text: 'Patient has a sulfa allergy — metolazone is a thiazide-like diuretic', correct: true },
+        { id: 'r2', text: 'Metolazone has no role in outpatient HF', correct: false },
+        { id: 'r3', text: 'PRN dosing is inappropriate for diuretics', correct: false },
+        { id: 'r4', text: 'Duplicate therapy with furosemide', correct: false }
+      ]
+    }
+  },
+  {
+    ...mk('HF_DH2', 'D_HF_DC',
+      'sacubitril/valsartan (ENTRESTO) 97/103 MG tablet',
+      '97/103 mg, Oral, BID — Uptitrate at discharge',
+      '97/103 mg', 'Oral', 'BID',
+      null
+    ),
+    teaching: {
+      correctAction: 'message',
+      detailedFeedback: {
+        verify: { grade: 'suboptimal', message: 'While reaching target-dose ARNI is the goal, uptitrating at hospital discharge is risky. The patient just recovered from ADHF with cardiorenal syndrome. BP is 112/68 — there may not be enough headroom for a dose increase. Target-dose ARNI uptitration is better done at the 7-day cardiology follow-up after confirming stable BP and renal function at home.' },
+        reject: { grade: 'acceptable', message: 'Rejecting the uptitration is defensible given the recent hospitalization and current BP. However, messaging to discuss timing shows better collaborative practice.' },
+        message: { grade: 'optimal', message: 'Best answer. The goal (target-dose ARNI) is correct, but the timing (hospital discharge) is wrong. Messaging to recommend uptitration at the 7-day cardiology visit allows BP and renal function monitoring in the outpatient setting — much safer.' }
+      },
+      explanation: 'ARNI uptitration at discharge is premature — defer to first outpatient follow-up visit.',
+      rejectReasons: [
+        { id: 'r1', text: 'Uptitrating at discharge is high-risk — recent cardiorenal syndrome', correct: true },
+        { id: 'r2', text: 'BP 112/68 may not tolerate higher dose', correct: true },
+        { id: 'r3', text: 'ARNI dose increases should be monitored in clinic', correct: true },
+        { id: 'r4', text: 'ARNI is contraindicated at this dose', correct: false }
       ]
     }
   }
@@ -1162,15 +1601,21 @@ const SEP_HARD = [
 ];
 
 export const DISEASE_CASES = {
-  hf:     { patients: HF_PATIENT,   orders: { easy: HF_EASY,   medium: HF_MEDIUM,   hard: HF_HARD   } },
-  cap:    { patients: CAP_PATIENT,  orders: { easy: CAP_EASY,  medium: CAP_MEDIUM,  hard: CAP_HARD  } },
-  uti:    { patients: UTI_PATIENT,  orders: { easy: UTI_EASY,  medium: UTI_MEDIUM,  hard: UTI_HARD  } },
-  afib:   { patients: AFIB_PATIENT, orders: { easy: AFIB_EASY, medium: AFIB_MEDIUM, hard: AFIB_HARD } },
-  sepsis: { patients: SEP_PATIENT,  orders: { easy: SEP_EASY,  medium: SEP_MEDIUM,  hard: SEP_HARD  } }
+  hf: {
+    admission: { patients: HF_PATIENT,     orders: { easy: HF_EASY,     medium: HF_MEDIUM,     hard: HF_HARD     } },
+    mid:       { patients: HF_MID_PATIENT,  orders: { easy: HF_MID_EASY, medium: HF_MID_MEDIUM, hard: HF_MID_HARD } },
+    discharge: { patients: HF_DC_PATIENT,   orders: { easy: HF_DC_EASY,  medium: HF_DC_MEDIUM,  hard: HF_DC_HARD  } }
+  },
+  cap:    { admission: { patients: CAP_PATIENT,  orders: { easy: CAP_EASY,  medium: CAP_MEDIUM,  hard: CAP_HARD  } } },
+  uti:    { admission: { patients: UTI_PATIENT,  orders: { easy: UTI_EASY,  medium: UTI_MEDIUM,  hard: UTI_HARD  } } },
+  afib:   { admission: { patients: AFIB_PATIENT, orders: { easy: AFIB_EASY, medium: AFIB_MEDIUM, hard: AFIB_HARD } } },
+  sepsis: { admission: { patients: SEP_PATIENT,  orders: { easy: SEP_EASY,  medium: SEP_MEDIUM,  hard: SEP_HARD  } } }
 };
 
-export function getDiseaseCases(diseaseId, level) {
-  const dc = DISEASE_CASES[diseaseId];
+export function getDiseaseCases(diseaseId, level, phase = 'admission') {
+  const disease = DISEASE_CASES[diseaseId];
+  if (!disease) return null;
+  const dc = disease[phase] || disease.admission;
   if (!dc) return null;
   const orders = dc.orders[level] || dc.orders.medium || [];
   return { patients: dc.patients, orders };

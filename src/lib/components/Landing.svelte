@@ -10,7 +10,9 @@
   function setTheme(t) {
     theme.set(t);
     localStorage.setItem('pv-theme', t);
+    document.documentElement.classList.add('theme-fading');
     document.documentElement.setAttribute('data-theme', t);
+    setTimeout(() => document.documentElement.classList.remove('theme-fading'), 500);
   }
 
   function scrollToHow() {

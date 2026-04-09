@@ -1,5 +1,30 @@
 <script>
   import { totalCompleted, overallAccuracy, firstTryAccuracy, currentStreak, sessionAccuracies, categoryPerformance, difficultyBreakdown, hardModeAvgGrade, recentAttempts, clearMetrics, attempts } from '$lib/stores/metrics.js';
+  import { orders, patients, reviewOrder } from '$lib/stores/app.js';
+  import { DEMO_ORDERS, DEMO_PATIENTS, getOrdersForDifficulty } from '$lib/data/demo.js';
+  import { DISEASE_CASES } from '$lib/data/diseases.js';
+
+  const ALL_ORDERS = {};
+  const ALL_PATIENTS = { ...DEMO_PATIENTS };
+  for (const o of DEMO_ORDERS) ALL_ORDERS[o.id] = o;
+  for (const l of ['easy','medium','hard']) {
+    for (const o of getOrdersForDifficulty(l) || []) ALL_ORDERS[o.id] = o;
+  }
+  for (const disease of Object.values(DISEASE_CASES)) {
+    for (const phase of Object.values(disease)) {
+      Object.assign(ALL_PATIENTS, phase.patients);
+      for (const lvl of Object.values(phase.orders)) {
+        for (const o of lvl) ALL_ORDERS[o.id] = o;
+      }
+    }
+  }
+  function lookupOrder(a) {
+    return a.orderSnapshot || ALL_ORDERS[a.orderId] || $orders.find(o => o.id === a.orderId);
+  }
+  function lookupPatient(a, ord) {
+    const pid = ord?.patientId || a.patientId;
+    return a.patientSnapshot || ALL_PATIENTS[pid] || $patients[pid];
+  }
 
   const gradeLabels = { optimal: 'Optimal', acceptable: 'Acceptable', suboptimal: 'Suboptimal', incorrect: 'Incorrect' };
 
@@ -177,7 +202,9 @@
       <h2>Recent Activity</h2>
       <div class="mx-activity">
         {#each $recentAttempts as a}
-          <div class="mx-act-row">
+          {@const ord = lookupOrder(a)}
+          {@const pt = lookupPatient(a, ord)}
+          <button type="button" class="mx-act-row mx-act-btn" disabled={!ord} title={ord ? 'Review this order (will not affect stats)' : 'Order no longer available'} onclick={() => reviewOrder(ord, pt)}>
             <span class="mx-act-icon" style="color:{a.isCorrect ? 'var(--grn)' : 'var(--red)'}">{a.isCorrect ? '\u2713' : '\u2717'}</span>
             <span class="mx-act-drug">{a.drugName.split(' ').slice(0, 4).join(' ')}</span>
             <span class="mx-act-action">{a.actionTaken}</span>
@@ -186,7 +213,7 @@
             {/if}
             <span class="mx-act-diff">{a.difficulty === 'default' ? 'Tutorial' : a.difficulty}</span>
             <span class="mx-act-time">{new Date(a.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
-          </div>
+          </button>
         {/each}
       </div>
     </div>

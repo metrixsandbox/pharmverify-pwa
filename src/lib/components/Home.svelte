@@ -1,9 +1,9 @@
 <script>
-  import { fade, fly, scale, slide } from 'svelte/transition';
-  import { quintOut, cubicOut } from 'svelte/easing';
+  import { fade, fly, scale } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
   import { user, view, orders, patients, setDisease, reviewOrder } from '$lib/stores/app.js';
   import { attempts, totalCompleted, overallAccuracy, currentStreak, recentAttempts } from '$lib/stores/metrics.js';
-  import { DISEASES, DISEASE_CASES } from '$lib/data/diseases.js';
+  import { DISEASES, DISEASE_CASES, PHASES } from '$lib/data/diseases.js';
   import { DEMO_ORDERS, DEMO_PATIENTS, getOrdersForDifficulty } from '$lib/data/demo.js';
 
   // Build a lookup of every known order across all disease/difficulty/demo sets
@@ -13,10 +13,12 @@
   for (const l of ['easy','medium','hard']) {
     for (const o of getOrdersForDifficulty(l) || []) ALL_ORDERS[o.id] = o;
   }
-  for (const dc of Object.values(DISEASE_CASES)) {
-    Object.assign(ALL_PATIENTS, dc.patients);
-    for (const lvl of Object.values(dc.orders)) {
-      for (const o of lvl) ALL_ORDERS[o.id] = o;
+  for (const disease of Object.values(DISEASE_CASES)) {
+    for (const phase of Object.values(disease)) {
+      Object.assign(ALL_PATIENTS, phase.patients);
+      for (const lvl of Object.values(phase.orders)) {
+        for (const o of lvl) ALL_ORDERS[o.id] = o;
+      }
     }
   }
 
@@ -30,11 +32,19 @@
 
   const LEVELS = ['easy', 'medium', 'hard'];
   let pickedDisease = $state(null);
+  let pickedPhase = $state('admission');
 
   function start(id, level) {
-    setDisease(id, level);
+    setDisease(id, level, pickedPhase);
     view.set('queue');
   }
+
+  // Available phases for the currently picked disease
+  let availablePhases = $derived(() => {
+    if (!pickedDisease) return [];
+    const d = DISEASES.find(x => x.id === pickedDisease);
+    return (d?.phases || ['admission']).map(pid => PHASES.find(p => p.id === pid)).filter(Boolean);
+  });
 
   function resume() {
     view.set('queue');
@@ -85,17 +95,29 @@
     {#each DISEASES as d, i}
       {@const built = !!DISEASE_CASES[d.id]}
       <div class="hm-tile" class:dim={!built} class:open={pickedDisease === d.id} in:fly={{ y: 24, duration: 480, delay: 200 + i * 60, easing: quintOut }}>
-        <button class="hm-tile-main" disabled={!built} onclick={() => pickedDisease = pickedDisease === d.id ? null : d.id}>
+        <button class="hm-tile-main" disabled={!built} onclick={() => { pickedDisease = pickedDisease === d.id ? null : d.id; pickedPhase = 'admission'; }}>
           <div class="hm-tile-ic">{d.icon}</div>
           <div class="hm-tile-name">{d.label}</div>
           <div class="hm-tile-desc">{d.desc}</div>
           {#if !built}<div class="hm-tile-soon">Coming soon</div>{/if}
         </button>
         {#if built && pickedDisease === d.id}
-          <div class="hm-tile-lvls" transition:slide={{ duration: 320, easing: cubicOut }}>
-            {#each LEVELS as l, li}
-              <button class="hm-lvl hm-lvl-{l}" onclick={() => start(d.id, l)} in:fly={{ y: 6, duration: 280, delay: 80 + li * 60, easing: quintOut }}>{l[0].toUpperCase() + l.slice(1)}</button>
-            {/each}
+          <div class="hm-tile-lvls">
+            {#if availablePhases().length > 1}
+              <div class="hm-phase-row">
+                <span class="hm-phase-lbl">Phase of care</span>
+                <div class="hm-phase-pills">
+                  {#each availablePhases() as ph}
+                    <button class="hm-phase-pill" class:act={pickedPhase === ph.id} onclick={() => pickedPhase = ph.id} title={ph.desc}>{ph.short}</button>
+                  {/each}
+                </div>
+              </div>
+            {/if}
+            <div class="hm-diff-row">
+              {#each LEVELS as l}
+                <button class="hm-lvl hm-lvl-{l}" onclick={() => start(d.id, l)}>{l[0].toUpperCase() + l.slice(1)}</button>
+              {/each}
+            </div>
           </div>
         {/if}
       </div>

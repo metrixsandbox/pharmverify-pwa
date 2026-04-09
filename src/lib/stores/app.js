@@ -181,8 +181,8 @@ export function setDifficulty(level) {
   if (typeof localStorage !== 'undefined') localStorage.removeItem(LS_CASES);
 }
 
-export function setDisease(diseaseId, level = 'medium') {
-  const dc = getDiseaseCases(diseaseId, level);
+export function setDisease(diseaseId, level = 'medium', phase = 'admission') {
+  const dc = getDiseaseCases(diseaseId, level, phase);
   if (!dc) return;
   patients.set({ ...dc.patients });
   orders.set([...dc.orders]);
