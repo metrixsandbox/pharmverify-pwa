@@ -21,6 +21,15 @@
     info: { bg: 'rgba(91,138,245,0.08)', bd: 'rgba(91,138,245,0.15)', c: '#5b8af5', d: '\u{1F535}' }
   };
 
+  function shuffled(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   let vt = $state('clinical');
   let sched = $state(JSON.parse(JSON.stringify(order.schedule || [])));
   let editTarget = $state(null);
@@ -84,7 +93,7 @@
 
       // If reject with reasons and grade is optimal/acceptable, show reasons first
       if (action === 'reject' && teaching.rejectReasons && (af.grade === 'optimal' || af.grade === 'acceptable')) {
-        rejectModal = { reasons: teaching.rejectReasons, selected: new Set() };
+        rejectModal = { reasons: shuffled(teaching.rejectReasons), selected: new Set() };
         return;
       }
 
@@ -115,7 +124,7 @@
     }
 
     if (action === 'reject' && teaching.rejectReasons) {
-      rejectModal = { reasons: teaching.rejectReasons, selected: new Set() };
+      rejectModal = { reasons: shuffled(teaching.rejectReasons), selected: new Set() };
       return;
     }
 

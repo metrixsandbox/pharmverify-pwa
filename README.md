@@ -112,6 +112,17 @@ All edits persist locally so you can build or tweak a case without leaving the a
 - Modern entry transitions on the home and landing pages (fly, fade, scale, staggered reveals)
 - Scroll-triggered reveal animations on the landing page (respects `prefers-reduced-motion`)
 - Smooth slide-down difficulty picker when you choose a disease tile, with no layout shift
+- **Randomized reject reasons** — the reject modal shuffles reason order every time it opens, so learners can't pattern-match on "the correct ones are always on top"
+
+---
+
+## Quality & testing
+
+- **93+ unit tests** across critical business logic (clinical utilities, parser, stores, components, localStorage edge cases, data integrity of demo and disease cases)
+- **Playwright E2E tests** covering the core verify → feedback loop
+- **CI workflow** runs unit tests and E2E on every push
+- Coverage reports generated for [utils/clinical.js](src/lib/utils/clinical.js) and [utils/parser.js](src/lib/utils/parser.js)
+- Recent stability fix: resolved a null-reference crash in the order pipeline
 
 ---
 
