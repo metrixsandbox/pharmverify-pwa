@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: process.env.CI ? [['html'], ['list']] : 'list',
 
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: 'http://localhost:4173/pharmverify-pwa/',
     trace: 'on-first-retry',
   },
 
@@ -22,7 +22,7 @@ export default defineConfig({
 
   webServer: {
     command: 'npm run build && npm run preview -- --port 4173',
-    url: 'http://localhost:4173',
+    url: 'http://localhost:4173/pharmverify-pwa/',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
