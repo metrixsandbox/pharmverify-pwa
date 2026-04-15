@@ -2,7 +2,7 @@
 
 **Practice the decision that matters most: verify, reject, or clarify.**
 
-PharmVerify is an inpatient order verification trainer for pharmacy students, residents, and pharmacists preparing for the floor or for boards. It puts you inside a realistic EHR-style workstation and asks the question every inpatient pharmacist answers a hundred times a shift: *should this order go through?*
+PharmVerify is an inpatient order-verification trainer for anyone who reads a chart and has to make a call — pharmacy students and interns, technicians stepping into tech-check-tech or advanced roles, PGY-1/PGY-2 residents, staff pharmacists refreshing for a new service, NP/PA learners studying inpatient prescribing, nursing students learning safe medication review, international pharmacists preparing for licensure, and preceptors who need a realistic assignment. It drops you into an EHR-style workstation and asks the question every inpatient team answers a hundred times a shift: *should this order go through?*
 
 ![PharmVerify landing page](static/landing.png)
 
@@ -33,9 +33,13 @@ Most pharmacy practice tools are flashcards. Flashcards are great for facts, but
 
 ## Who it's for
 
-- **Pharmacy students** on IPPE/APPE rotations who want reps before they're standing next to a preceptor.
-- **PGY-1 residents** building speed and pattern recognition for verification shifts.
-- **NAPLEX / BCPS candidates** who want board-style clinical reasoning instead of dry recall.
+- **Pharmacy students & interns** on IPPE/APPE rotations who want reps before they're standing next to a preceptor.
+- **Pharmacy technicians** moving into tech-check-tech, specialty, or advanced verification-support roles.
+- **PGY-1 / PGY-2 residents** building speed and pattern recognition for verification shifts.
+- **Staff pharmacists** cross-training onto a new service (ICU, onc, peds) or coming back from a career gap.
+- **NAPLEX, MPJE, BCPS, BCACP, BCCCP candidates** who want board-style clinical reasoning instead of dry recall.
+- **International pharmacists** preparing for FPGEE, PEBC, KAPS, or other licensure exams who need realistic US/inpatient workflow practice.
+- **Schools of pharmacy & residency programs** wanting a shared, editable bank of cases.
 - **Preceptors** looking for a low-stakes way to assign realistic verification practice.
 
 ---
@@ -134,7 +138,7 @@ All cases, attempts, and progress are stored **locally on your device**. Nothing
 
 ## Getting started
 
-Visit the app, create a local profile (just your name and email — stays on your device), pick a disease and difficulty, and start working through cases. The first time you log in there's a short walkthrough orienting you to the workstation.
+Visit the app, create a local profile (just your name and email — stays on your device), pick a disease and difficulty, and start working through cases. The first time you log in there's a short walkthrough orienting you to the workstation. No install, no account server, works on laptop or tablet.
 
 ---
 
