@@ -11,7 +11,8 @@
       "Bash(mv \"Screenshot 2026-04-08 171738.png\" home.png)",
       "Bash(mv \"Screenshot 2026-04-08 171820.png\" verify.png)",
       "Bash(mv \"Screenshot 2026-04-08 171837.png\" hp.png)",
-      "Bash(mv \"Screenshot 2026-04-08 171901.png\" edit-mode.png)"
+      "Bash(mv \"Screenshot 2026-04-08 171901.png\" edit-mode.png)",
+      "Bash(gh repo *)"
     ]
   }
 }

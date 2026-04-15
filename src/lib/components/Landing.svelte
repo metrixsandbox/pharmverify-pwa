@@ -4,6 +4,7 @@
   import AccountCreation from './AccountCreation.svelte';
   import { inview } from '$lib/utils/inview.js';
   import { theme } from '$lib/stores/app.js';
+  import { base } from '$app/paths';
 
   let showSignup = $state(false);
 
@@ -93,19 +94,19 @@
       <h2 class="lp-h2" use:inview>A look inside</h2>
       <div class="lp-shot-grid">
         <figure class="lp-shot reveal-d1" use:inview>
-          <img src="/home.png" alt="Home dashboard with disease practice tiles and stats" loading="lazy" />
+          <img src="{base}/home.png" alt="Home dashboard with disease practice tiles and stats" loading="lazy" />
           <figcaption>Home dashboard &mdash; pick a disease, track your stats</figcaption>
         </figure>
         <figure class="lp-shot reveal-d2" use:inview>
-          <img src="/verify.png" alt="Order verification screen inside the EHR-style workstation" loading="lazy" />
+          <img src="{base}/verify.png" alt="Order verification screen inside the EHR-style workstation" loading="lazy" />
           <figcaption>Verify, reject, or message &mdash; with the full chart at hand</figcaption>
         </figure>
         <figure class="lp-shot reveal-d3" use:inview>
-          <img src="/hp.png" alt="Patient H and P chart view with vitals and exam" loading="lazy" />
+          <img src="{base}/hp.png" alt="Patient H and P chart view with vitals and exam" loading="lazy" />
           <figcaption>Real chart context &mdash; H&amp;P, vitals, PMH, home meds</figcaption>
         </figure>
         <figure class="lp-shot reveal-d4" use:inview>
-          <img src="/edit-mode.png" alt="Preceptor edit mode with editable allergies and labs" loading="lazy" />
+          <img src="{base}/edit-mode.png" alt="Preceptor edit mode with editable allergies and labs" loading="lazy" />
           <figcaption>Preceptor edit mode &mdash; tweak any field, build cases live</figcaption>
         </figure>
       </div>

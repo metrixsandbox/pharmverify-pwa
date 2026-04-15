@@ -34,7 +34,6 @@ Most pharmacy practice tools are flashcards. Flashcards are great for facts, but
 ## Who it's for
 
 - **Pharmacy students & interns** on IPPE/APPE rotations who want reps before they're standing next to a preceptor.
-- **Pharmacy technicians** moving into tech-check-tech, specialty, or advanced verification-support roles.
 - **PGY-1 / PGY-2 residents** building speed and pattern recognition for verification shifts.
 - **Staff pharmacists** cross-training onto a new service (ICU, onc, peds) or coming back from a career gap.
 - **NAPLEX, MPJE, BCPS, BCACP, BCCCP candidates** who want board-style clinical reasoning instead of dry recall.

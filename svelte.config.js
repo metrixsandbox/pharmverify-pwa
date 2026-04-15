@@ -1,12 +1,20 @@
 import adapter from '@sveltejs/adapter-static';
 
-/** @type {import('@sveltejs/kit').Config} */
+const dev = process.argv.includes('dev');
+
 const config = {
-	kit: {
-		adapter: adapter({
-			fallback: 'index.html'
-		})
-	}
+  kit: {
+    adapter: adapter({
+      pages: 'build',
+      assets: 'build',
+      fallback: '404.html',
+      precompress: false,
+      strict: true
+    }),
+    paths: {
+      base: dev ? '' : '/pharmverify-pwa'
+    }
+  }
 };
 
 export default config;
