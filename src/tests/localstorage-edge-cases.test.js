@@ -29,16 +29,20 @@ describe('corrupted localStorage: metrics store', () => {
     expect(get(sessions)).toEqual([]);
   });
 
-  it('does NOT handle null value in localStorage (known limitation)', async () => {
-    // BUG: JSON.parse('null') returns null (valid JSON, no error thrown),
-    // but the load() function only falls back to [] on parse failure.
-    // The store gets initialized with null instead of [].
-    // This could be fixed by: JSON.parse(raw) || [] instead of relying on catch.
+  it('handles null value in localStorage by falling back to []', async () => {
+    // Fixed: JSON.parse('null') returns null (valid JSON), but the load()
+    // function now checks Array.isArray and falls back to [] for non-arrays.
     localStorage.setItem('pv-attempts', 'null');
     const { attempts } = await import('$lib/stores/metrics.js');
     const { get } = await import('svelte/store');
-    const val = get(attempts);
-    expect(val).toBeNull(); // documents current behavior — should ideally be []
+    expect(get(attempts)).toEqual([]);
+  });
+
+  it('handles non-array JSON (object) by falling back to []', async () => {
+    localStorage.setItem('pv-attempts', '{"not":"an array"}');
+    const { attempts } = await import('$lib/stores/metrics.js');
+    const { get } = await import('svelte/store');
+    expect(get(attempts)).toEqual([]);
   });
 
   it('handles empty string in localStorage', async () => {

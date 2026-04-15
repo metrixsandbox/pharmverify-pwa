@@ -8,7 +8,10 @@ const CATEGORY_MAP = {
 };
 
 function load(key) {
-  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
 }
 function save(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
