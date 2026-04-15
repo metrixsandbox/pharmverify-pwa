@@ -1,5 +1,7 @@
 # PharmVerify
 
+**[Try it live → https://metrixsandbox.github.io/pharmverify-pwa/](https://metrixsandbox.github.io/pharmverify-pwa/)**
+
 **Practice the decision that matters most: verify, reject, or clarify.**
 
 PharmVerify is an inpatient order-verification trainer for anyone who reads a chart and has to make a call — pharmacy students and interns, technicians stepping into tech-check-tech or advanced roles, PGY-1/PGY-2 residents, staff pharmacists refreshing for a new service, NP/PA learners studying inpatient prescribing, nursing students learning safe medication review, international pharmacists preparing for licensure, and preceptors who need a realistic assignment. It drops you into an EHR-style workstation and asks the question every inpatient team answers a hundred times a shift: *should this order go through?*
@@ -137,7 +139,7 @@ All cases, attempts, and progress are stored **locally on your device**. Nothing
 
 ## Getting started
 
-Visit the app, create a local profile (just your name and email — stays on your device), pick a disease and difficulty, and start working through cases. The first time you log in there's a short walkthrough orienting you to the workstation. No install, no account server, works on laptop or tablet.
+Open **[https://metrixsandbox.github.io/pharmverify-pwa/](https://metrixsandbox.github.io/pharmverify-pwa/)**, create a local profile (just your name and email — stays on your device), pick a disease and difficulty, and start working through cases. The first time you log in there's a short walkthrough orienting you to the workstation. No install, no account server, works on laptop or tablet.
 
 ---
 
