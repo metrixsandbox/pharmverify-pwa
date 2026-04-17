@@ -510,3 +510,115 @@ body.edit-mode-on::before{content:'';position:fixed;inset:0;pointer-events:none;
 button.hm-rec{width:100%;cursor:pointer;font-family:inherit;color:inherit;text-align:left;transition:border-color .15s,background .15s}
 button.hm-rec:hover:not(:disabled){border-color:var(--a);background:var(--bg2,var(--gb))}
 button.hm-rec:disabled{cursor:default;opacity:.6}
+
+/* ============ Mobile Layout (< 768px) ============ */
+@media(max-width:768px){
+  /* Flip app to column, sidebar becomes bottom nav */
+  .app{flex-direction:column;height:100dvh}
+  .sb{width:100%;min-width:unset;height:56px;flex-direction:row;border-right:none;border-top:1px solid var(--gbo);padding:0 8px;gap:0;order:1;justify-content:space-around;position:fixed;bottom:0;left:0;z-index:50;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .main{flex:1;overflow-y:auto;padding-bottom:56px}
+  .sb-logo{display:none}
+  .sb-btn{width:44px;height:44px;font-size:20px}
+  .sb-btn .tip{display:none!important}
+  .sb-btn .bdg{top:0;right:0}
+  .sb-user{display:none}
+  .sb-logout{display:none}
+  .sb-edit{width:36px;height:36px;font-size:16px}
+
+  /* Queue */
+  .qhdr{padding:12px 16px;flex-direction:column;align-items:stretch;gap:8px}
+  .qhdr h1{font-size:18px}
+  .qhdr .ct{font-size:12px}
+  .qflt{order:1}
+  .qact{margin:0;width:100%}
+  .diff-bar{padding:8px 16px;flex-wrap:wrap;gap:6px}
+  .diff-btn{font-size:12px;padding:5px 10px}
+  .diff-desc{font-size:11px;width:100%}
+  .dz-bar{padding:8px 16px;flex-wrap:wrap;gap:4px}
+  .dz-btn{font-size:11px;padding:4px 8px}
+  .qrhdr{display:none}
+  .qr{display:flex;flex-direction:column;gap:4px;padding:12px 16px}
+  .ql{padding:0}
+  .empty{padding:40px 20px}
+
+  /* Chart view */
+  .cbd{padding:12px 16px}
+  .vp{flex-direction:column;gap:12px;padding:12px 16px}
+  .vps{width:100%;min-width:unset}
+  .oh .od{font-size:16px}
+  .oh .ol{font-size:12px}
+  .va{flex-direction:column;gap:8px}
+  .va .btn{width:100%;justify-content:center;padding:12px}
+  .cg{grid-template-columns:1fr}
+  .stbl{font-size:12px}
+  .tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 12px}
+  .tab-bar button{white-space:nowrap;font-size:13px}
+
+  /* Feedback modal */
+  .tmo{padding:8px}
+  .tmb{max-width:100%;margin:0;border-radius:12px}
+  .fb-modal{width:100%;max-height:85vh;overflow-y:auto;border-radius:12px}
+  .fb-header{padding:16px}
+  .fb-body{padding:0 16px 16px;font-size:13px}
+  .tma{padding:0 16px 16px}
+
+  /* Home */
+  .hm{padding:16px}
+  .hm-hi{font-size:22px}
+  .hm-stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .hm-stat{padding:12px}
+  .hm-stat-n{font-size:24px}
+  .hm-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .hm-tile.open{grid-column:span 2}
+  .hm-hd{flex-direction:column;gap:12px}
+  .hm-resume{width:100%}
+  .hm-sect-hd h2{font-size:18px}
+  .hm-recent{gap:8px}
+  .hm-rec{padding:10px 12px;font-size:13px}
+
+  /* Metrics */
+  .mx-wrap{padding:16px}
+  .mx-hdr h1{font-size:20px}
+  .mx-stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .mx-stat{padding:14px}
+  .mx-stat-val{font-size:26px}
+  .mx-row{flex-direction:column}
+  .mx-chart-wrap{overflow-x:auto}
+  .mx-act-row{font-size:12px;gap:6px}
+  .mx-act-drug{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* Landing */
+  .lp-hero{grid-template-columns:1fr;padding:40px 20px;gap:30px}
+  .lp-mock{display:none}
+  .lp-h1{font-size:30px}
+  .lp-lede{font-size:16px}
+  .lp-nav{padding:12px 16px}
+  .lp-cta-row{flex-direction:column}
+  .lp-cta,.lp-cta-ghost{width:100%;text-align:center}
+  .lp-trust{flex-direction:column;gap:4px;font-size:12px}
+  .lp-shots{padding:60px 16px 16px}
+  .lp-shot-grid{grid-template-columns:1fr}
+  .lp-how{padding:60px 16px}
+  .lp-steps{grid-template-columns:1fr;gap:16px}
+  .lp-disease-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .lp-dz{padding:14px 12px;font-size:13px}
+  .lp-final{padding:40px 16px 80px}
+
+  /* Account creation */
+  .ac-wrap{padding:20px 16px}
+  .ac-card{padding:28px 20px}
+  .ac-roles{flex-direction:column}
+
+  /* Tutorial */
+  .tut-card{max-width:95vw;padding:20px}
+  .tut-decision{flex-direction:column}
+  .tut-dec-vs{justify-content:center}
+
+  /* Labs */
+  .lab-split{flex-direction:column}
+  .lab-panels{width:100%;min-width:unset;flex-direction:row;flex-wrap:wrap}
+  .lab-panel-btn{flex:1 1 auto}
+
+  /* Upload modal */
+  .umod{padding:16px;width:95vw}
+}
