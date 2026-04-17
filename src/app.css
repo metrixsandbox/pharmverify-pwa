@@ -108,6 +108,8 @@ html{scrollbar-gutter:stable}
 .fb-incorrect .fb-title{color:var(--red)}
 .fb-body{font-size:14px;line-height:1.65;color:var(--t2)}
 .fb-body p{margin-bottom:8px}
+.fb-guideline{display:inline-block;margin-top:10px;padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--a);background:rgba(91,138,245,.08);border:1px solid rgba(91,138,245,.2);text-decoration:none;transition:var(--tr)}
+.fb-guideline:hover{background:rgba(91,138,245,.15);border-color:rgba(91,138,245,.35)}
 /* Reject reasons */
 .reject-reasons{display:flex;flex-direction:column;gap:6px}
 .reject-reason{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--gbo);background:var(--gb);cursor:pointer;transition:var(--tr);font-size:14px;color:var(--t2);line-height:1.5}
