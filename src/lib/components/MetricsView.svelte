@@ -1,6 +1,7 @@
 <script>
-  import { totalCompleted, overallAccuracy, firstTryAccuracy, currentStreak, sessionAccuracies, categoryPerformance, difficultyBreakdown, hardModeAvgGrade, recentAttempts, clearMetrics, attempts } from '$lib/stores/metrics.js';
-  import { orders, patients, reviewOrder } from '$lib/stores/app.js';
+  import { totalCompleted, overallAccuracy, firstTryAccuracy, currentStreak, sessionAccuracies, categoryPerformance, difficultyBreakdown, hardModeAvgGrade, recentAttempts, clearMetrics, attempts, sessions } from '$lib/stores/metrics.js';
+  import { orders, patients, reviewOrder, user } from '$lib/stores/app.js';
+  import { cohort, exportStudentData } from '$lib/stores/cohort.js';
   import { DEMO_ORDERS, DEMO_PATIENTS, getOrdersForDifficulty } from '$lib/data/demo.js';
   import { DISEASE_CASES } from '$lib/data/diseases.js';
 
@@ -78,6 +79,16 @@
         {:else}
           <button class="fb fb-clr" onclick={() => showConfirm = true}>Reset Metrics</button>
         {/if}
+        <button class="fb" onclick={() => {
+          const json = exportStudentData($user, $attempts, $sessions, $cohort);
+          const blob = new Blob([json], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `pharmverify-${$user.name.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0,10)}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }}>&#x2B07; Export Data</button>
       {/if}
     </div>
   </div>

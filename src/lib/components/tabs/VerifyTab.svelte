@@ -507,6 +507,11 @@
               {/each}
             </div>
           {/if}
+          {#if order.teaching?.guideline}
+            <a class="fb-guideline" href={order.teaching.guideline.url} target="_blank" rel="noopener noreferrer">
+              &#x1F4D6; {order.teaching.guideline.name} &rarr;
+            </a>
+          {/if}
         </div>
         <div class="tma" style="margin-top:14px">
           <button class="btn bv" onclick={closeFeedback}>

@@ -9,6 +9,7 @@
   import UploadModal from '$lib/components/UploadModal.svelte';
   import Landing from '$lib/components/Landing.svelte';
   import MetricsView from '$lib/components/MetricsView.svelte';
+  import ClassManager from '$lib/components/ClassManager.svelte';
   import Tutorial from '$lib/components/Tutorial.svelte';
 
   let showTutorial = $state(false);
@@ -44,6 +45,8 @@
         <ChartView />
       {:else if $view === 'metrics'}
         <MetricsView />
+      {:else if $view === 'class'}
+        <ClassManager />
       {/if}
     </div>
   </div>
