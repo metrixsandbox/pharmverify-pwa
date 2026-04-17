@@ -55,6 +55,11 @@
     &#x1F4CA;<span class="tip">Performance</span>
     {#if $attempts.length > 0}<span class="bdg" style="background:var(--pur)">{$attempts.length}</span>{/if}
   </button>
+  {#if isPreceptor}
+    <button class="sb-btn" class:act={$view === 'class'} onclick={() => view.set('class')}>
+      &#x1F3EB;<span class="tip">Class</span>
+    </button>
+  {/if}
   <div style="flex:1"></div>
   <button class="sb-btn" onclick={toggleTheme}>
     {$theme === 'dark' ? '\u2600' : '\u{1F319}'}<span class="tip">{$theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
