@@ -2,6 +2,10 @@
 // Each disease has a patient record + orders grouped by difficulty (easy/medium/hard).
 // Easy = clearly wrong orders. Medium = mix of correct/incorrect. Hard = graded spectrum.
 
+import { COPD_PATIENT, COPD_EASY, COPD_MEDIUM, COPD_HARD } from './disease-copd.js';
+import { DKA_PATIENT, DKA_EASY, DKA_MEDIUM, DKA_HARD } from './disease-dka.js';
+import { AKI_PATIENT, AKI_EASY, AKI_MEDIUM, AKI_HARD } from './disease-aki.js';
+
 export const PHASES = [
   { id: 'admission', label: 'Admission (Day 1)',       short: 'Day 1',   desc: 'Initial workup, empiric therapy, GDMT decisions' },
   { id: 'mid',       label: 'Reassessment (Day 3\u20134)', short: 'Day 3\u20134', desc: 'Therapy response, dose adjustments, transitions' },
@@ -15,13 +19,16 @@ export const DISEASES = [
     phases: ['admission'] },
   { id: 'uti',        label: 'UTI / Pyelonephritis',    icon: '\u{1F48A}', desc: 'Complicated pyelonephritis',
     phases: ['admission'] },
-  { id: 'copd',       label: 'COPD Exacerbation',       icon: '\u{1F32C}', desc: 'Coming soon' },
-  { id: 'dka',        label: 'DKA',                     icon: '\u{1F4A7}', desc: 'Coming soon' },
+  { id: 'copd',       label: 'COPD Exacerbation',       icon: '\u{1F32C}', desc: 'Acute exacerbation of COPD',
+    phases: ['admission'] },
+  { id: 'dka',        label: 'DKA',                     icon: '\u{1F4A7}', desc: 'Diabetic ketoacidosis in T1DM',
+    phases: ['admission'] },
   { id: 'afib',       label: 'Atrial Fibrillation',     icon: '\u{1F493}', desc: 'Coming soon',
     phases: ['admission'] },
   { id: 'sepsis',     label: 'Sepsis',                  icon: '\u{1F525}', desc: 'Coming soon',
     phases: ['admission'] },
-  { id: 'aki',        label: 'Acute Kidney Injury',     icon: '\u{1FAC0}', desc: 'Coming soon' },
+  { id: 'aki',        label: 'Acute Kidney Injury',     icon: '\u{1FAC0}', desc: 'Prerenal AKI on CKD III',
+    phases: ['admission'] },
   { id: 'vte',        label: 'DVT / PE',                icon: '\u{1FA78}', desc: 'Coming soon' },
   { id: 'cellulitis', label: 'Cellulitis / SSTI',       icon: '\u{1F9A0}', desc: 'Coming soon' }
 ];
@@ -1609,7 +1616,10 @@ export const DISEASE_CASES = {
   cap:    { admission: { patients: CAP_PATIENT,  orders: { easy: CAP_EASY,  medium: CAP_MEDIUM,  hard: CAP_HARD  } } },
   uti:    { admission: { patients: UTI_PATIENT,  orders: { easy: UTI_EASY,  medium: UTI_MEDIUM,  hard: UTI_HARD  } } },
   afib:   { admission: { patients: AFIB_PATIENT, orders: { easy: AFIB_EASY, medium: AFIB_MEDIUM, hard: AFIB_HARD } } },
-  sepsis: { admission: { patients: SEP_PATIENT,  orders: { easy: SEP_EASY,  medium: SEP_MEDIUM,  hard: SEP_HARD  } } }
+  sepsis: { admission: { patients: SEP_PATIENT,  orders: { easy: SEP_EASY,  medium: SEP_MEDIUM,  hard: SEP_HARD  } } },
+  copd:   { admission: { patients: COPD_PATIENT, orders: { easy: COPD_EASY, medium: COPD_MEDIUM, hard: COPD_HARD } } },
+  dka:    { admission: { patients: DKA_PATIENT,  orders: { easy: DKA_EASY,  medium: DKA_MEDIUM,  hard: DKA_HARD  } } },
+  aki:    { admission: { patients: AKI_PATIENT,  orders: { easy: AKI_EASY,  medium: AKI_MEDIUM,  hard: AKI_HARD  } } }
 };
 
 export function getDiseaseCases(diseaseId, level, phase = 'admission') {
