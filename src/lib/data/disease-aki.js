@@ -63,7 +63,17 @@ export const AKI_EASY = [
         { id: 'r3', text: 'Acetaminophen is the preferred analgesic in AKI', correct: true },
         { id: 'r4', text: 'NSAIDs cause hyperkalemia', correct: false },
         { id: 'r5', text: 'Drug allergy', correct: false }
-      ], guideline: GL }
+      ], guideline: GL,
+      decisionTree: {
+        title: 'Clinical Reasoning: NSAID in AKI',
+        steps: [
+          { q: 'Is this drug nephrotoxic?', a: 'Yes — NSAIDs cause afferent arteriolar vasoconstriction, reducing renal blood flow', icon: 'check' },
+          { q: 'Does the patient have renal impairment?', a: 'Yes — SCr 3.2 (baseline 1.3), CKD III + new AKI, FENa 0.6%', icon: 'check' },
+          { q: 'Is the NSAID contributing to the AKI?', a: 'Yes — NSAID use is a key reversible cause here', icon: 'check' },
+          { q: 'Is a safer alternative available?', a: 'Yes — acetaminophen is the preferred analgesic in AKI', icon: 'check' }
+        ],
+        conclusion: 'REJECT the NSAID. Continuing it would worsen renal injury. Recommend scheduled acetaminophen for pain control.'
+      } }
   },
   { id: 'AKI_E2', patientId: 'D_AKI', orderId: '103701002', isNew: true, priority: 'Routine', timePending: '1h 45m', drugName: 'gentamicin 325 MG IVPB', orderLine: '325 mg (5 mg/kg), IVPB, Q24H', alerts: [], clinical: { dose: '325 mg', route: 'IVPB', freq: 'Every 24 hours', duration: '60 min', rate: '', volume: '100 mL NS', priority: 'Routine', start: '04/08/2026 1400', stop: '' }, schedule: [{ date: '04/08', times: ['1400'] }], dispense: { from: 'SGA 5 NORTH', firstDose: 'SGA 5 NORTH', code: 'Unit Dose', triggered: true }, orderedBy: 'Patel, Anita, MD', orderedDt: '04/08/2026 0730', product: { name: 'GENTAMICIN 40MG/ML INJ', pkg: '2 mL Vial' },
     teaching: { correctAction: 'reject', explanation: 'Gentamicin is an aminoglycoside, a direct nephrotoxin that would worsen AKI through tubular injury. Even if needed for infection, the dose requires renal adjustment based on CrCl. Standard 5 mg/kg dosing in AKI can lead to accumulation and further renal damage. No documented infection indication here.',
@@ -92,7 +102,17 @@ export const AKI_MEDIUM = [
     teaching: { correctAction: 'verify', explanation: 'IV crystalloid resuscitation is the appropriate first-line treatment for prerenal AKI. KDIGO recommends isotonic crystalloids. 250 mL/hr is reasonable for moderate volume depletion with ongoing monitoring. Watch for fluid overload given mild CHF history.', guideline: GL }
   },
   { id: 'AKI_M2', patientId: 'D_AKI', orderId: '103702002', isNew: true, priority: 'Routine', timePending: '2h 00m', drugName: 'hold lisinopril 20 MG', orderLine: 'Hold until renal function improves', alerts: [], clinical: { dose: 'N/A (Hold)', route: 'PO', freq: 'Hold', duration: '', rate: '', volume: '', priority: 'Routine', start: '04/08/2026', stop: '' }, schedule: [{ date: '04/08', times: ['Hold'] }], dispense: { from: 'SGA 5 NORTH', firstDose: 'N/A', code: 'Hold Order', triggered: false }, orderedBy: 'Patel, Anita, MD', orderedDt: '04/08/2026 0700', product: { name: 'LISINOPRIL 20 MG TABS', pkg: 'Hold order' },
-    teaching: { correctAction: 'verify', explanation: 'ACE inhibitors should be held during acute kidney injury. They cause efferent arteriolar vasodilation, which can reduce glomerular filtration pressure and worsen AKI. Holding until SCr returns toward baseline is standard practice. Restart carefully once stable.', guideline: GL }
+    teaching: { correctAction: 'verify', explanation: 'ACE inhibitors should be held during acute kidney injury. They cause efferent arteriolar vasodilation, which can reduce glomerular filtration pressure and worsen AKI. Holding until SCr returns toward baseline is standard practice. Restart carefully once stable.', guideline: GL,
+      decisionTree: {
+        title: 'Clinical Reasoning: ACEi in AKI',
+        steps: [
+          { q: 'Does the patient have AKI?', a: 'Yes — SCr 3.2 from baseline 1.3 (>2x rise)', icon: 'check' },
+          { q: 'How do ACE inhibitors affect renal hemodynamics?', a: 'They cause efferent arteriolar vasodilation, dropping glomerular filtration pressure', icon: 'warn' },
+          { q: 'In volume-depleted or AKI states, is that safe?', a: 'No — can precipitate or worsen AKI', icon: 'x' },
+          { q: 'Is holding the ACEi the standard of care?', a: 'Yes — hold until SCr trends toward baseline, then restart cautiously with BMP follow-up', icon: 'check' }
+        ],
+        conclusion: 'VERIFY the hold order. ACEi should be paused during AKI and resumed only once renal function recovers.'
+      } }
   },
   { id: 'AKI_M3', patientId: 'D_AKI', orderId: '103702003', isNew: true, priority: 'Routine', timePending: '1h 30m', drugName: 'vancomycin 1000 MG IVPB', orderLine: '1000 mg, IVPB, Q12H', alerts: [], clinical: { dose: '1000 mg', route: 'IVPB', freq: 'Every 12 hours', duration: '90 min', rate: '', volume: '250 mL NS', priority: 'Routine', start: '04/08/2026 0900', stop: '' }, schedule: [{ date: '04/08', times: ['0900', '2100'] }], dispense: { from: 'SGA 5 NORTH', firstDose: 'SGA 5 NORTH', code: 'Unit Dose', triggered: true }, orderedBy: 'Patel, Anita, MD', orderedDt: '04/08/2026 0740', product: { name: 'VANCOMYCIN 1GM/250ML IVPB', pkg: '250 mL Premix' },
     teaching: { correctAction: 'reject', explanation: 'Standard vancomycin Q12H dosing is inappropriate in severe AKI (SCr 3.2, CrCl ~15 mL/min). Vancomycin requires extended-interval dosing (Q24-48H or longer) based on renal function and trough monitoring. Additionally, no infection indication is documented. This order should be rejected for both the dosing interval and lack of indication.',
@@ -126,6 +146,16 @@ export const AKI_HARD = [
       verify: { grade: 'acceptable', message: 'SCr at 1.5 is close to baseline (1.3) and restarting at a lower dose (10 mg vs home 20 mg) is reasonable. However, some clinicians wait until SCr is fully at baseline for 24-48 hours before restarting. The nuance is whether to restart now or wait.' },
       reject: { grade: 'incorrect', message: 'Lisinopril is appropriate long-term therapy for this patient with HTN and CHF. The question is timing, not whether to restart.' },
       message: { grade: 'optimal', message: 'Great clinical thinking. The restart decision is a judgment call: baseline SCr is 1.3, current is 1.5. Starting at a lower dose (10 mg vs 20 mg home dose) is prudent. Messaging to confirm the timing plan and monitoring strategy (BMP in 48-72h after restart) demonstrates thoughtful care transitions.' }
-    }, explanation: 'ACE restart timing after AKI is nuanced. Lower dose and close monitoring are appropriate. Messaging to discuss timing is optimal.', guideline: GL }
+    }, explanation: 'ACE restart timing after AKI is nuanced. Lower dose and close monitoring are appropriate. Messaging to discuss timing is optimal.', guideline: GL,
+      decisionTree: {
+        title: 'Clinical Reasoning: ACEi Restart Timing',
+        steps: [
+          { q: 'Is there a long-term indication for the ACEi?', a: 'Yes — HTN and mild CHF', icon: 'check' },
+          { q: 'Has renal function recovered?', a: 'Trending toward baseline (SCr 1.5 vs 1.3) but not fully recovered', icon: 'warn' },
+          { q: 'Is the proposed dose appropriate for the current renal status?', a: '10 mg is half the home dose — reasonable titration', icon: 'check' },
+          { q: 'What should happen after restart?', a: 'BMP in 48–72h, hold if SCr rises >30% from new baseline', icon: 'check' }
+        ],
+        conclusion: 'MESSAGE is optimal — confirm the restart timing and monitoring plan before verifying. VERIFY is acceptable; REJECT misses the indication.'
+      } }
   }
 ];

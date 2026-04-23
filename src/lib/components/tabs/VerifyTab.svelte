@@ -1,6 +1,7 @@
 <script>
   import { difficulty, reviewMode, editMode, updateOrder, updateOrderPath } from '$lib/stores/app.js';
   import Editable from '../Editable.svelte';
+  import DecisionTree from '../DecisionTree.svelte';
   import { recordAttempt } from '$lib/stores/metrics.js';
   let { order, patient, toast, onVerify } = $props();
 
@@ -511,6 +512,9 @@
             <a class="fb-guideline" href={order.teaching.guideline.url} target="_blank" rel="noopener noreferrer">
               &#x1F4D6; {order.teaching.guideline.name} &rarr;
             </a>
+          {/if}
+          {#if order.teaching?.decisionTree}
+            <DecisionTree tree={order.teaching.decisionTree} />
           {/if}
         </div>
         <div class="tma" style="margin-top:14px">

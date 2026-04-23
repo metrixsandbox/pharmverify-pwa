@@ -89,7 +89,17 @@ export const COPD_EASY = [
 
 export const COPD_MEDIUM = [
   { id: 'COPD_M1', patientId: 'D_COPD', orderId: '103502001', isNew: true, priority: 'Routine', timePending: '3h 00m', drugName: 'predniSONE 40 MG tablet', orderLine: '40 mg, Oral, Daily x 5 days', alerts: [], clinical: { dose: '40 mg', route: 'Oral', freq: 'Daily', duration: '5 days', rate: '', volume: '', priority: 'Routine', start: '04/06/2026 0900', stop: '04/10/2026' }, schedule: [{ date: '04/06', times: ['0900'] }, { date: '04/07', times: ['0900'] }], dispense: { from: 'SGA 3 SOUTH', firstDose: 'SGA 3 SOUTH', code: 'Unit Dose', triggered: true }, orderedBy: 'Nguyen, David, MD', orderedDt: '04/06/2026 0800', product: { name: 'PREDNISONE 20 MG TABS', pkg: '100ct Bottle' },
-    teaching: { correctAction: 'verify', explanation: 'Prednisone 40 mg PO daily for 5 days is the GOLD-recommended systemic corticosteroid regimen for AECOPD. The REDUCE trial showed 5 days is non-inferior to 14 days. This is a straightforward verification.', guideline: GL }
+    teaching: { correctAction: 'verify', explanation: 'Prednisone 40 mg PO daily for 5 days is the GOLD-recommended systemic corticosteroid regimen for AECOPD. The REDUCE trial showed 5 days is non-inferior to 14 days. This is a straightforward verification.', guideline: GL,
+      decisionTree: {
+        title: 'Clinical Reasoning: Systemic Steroids in AECOPD',
+        steps: [
+          { q: 'Does the patient have AECOPD?', a: 'Yes — worsening dyspnea, purulent sputum, and wheeze on exam', icon: 'check' },
+          { q: 'Are systemic steroids indicated?', a: 'Yes — GOLD recommends systemic corticosteroids for AECOPD', icon: 'check' },
+          { q: 'Is the dose appropriate?', a: 'Yes — prednisone 40 mg PO daily is GOLD-recommended', icon: 'check' },
+          { q: 'Is the duration correct?', a: 'Yes — REDUCE trial: 5 days non-inferior to 14 days', icon: 'check' }
+        ],
+        conclusion: 'VERIFY. Aligns with GOLD 2024 guidance. Monitor glucose and mood/sleep; taper not required at this duration.'
+      } }
   },
   { id: 'COPD_M2', patientId: 'D_COPD', orderId: '103502002', isNew: true, priority: 'Routine', timePending: '2h 45m', drugName: 'azithromycin 500 MG tablet', orderLine: '500 mg, Oral, Daily x 3 days', alerts: [], clinical: { dose: '500 mg', route: 'Oral', freq: 'Daily', duration: '3 days', rate: '', volume: '', priority: 'Routine', start: '04/06/2026 0900', stop: '04/08/2026' }, schedule: [{ date: '04/06', times: ['0900'] }, { date: '04/07', times: ['0900'] }], dispense: { from: 'SGA 3 SOUTH', firstDose: 'SGA 3 SOUTH', code: 'Unit Dose', triggered: true }, orderedBy: 'Nguyen, David, MD', orderedDt: '04/06/2026 0805', product: { name: 'AZITHROMYCIN 250 MG TABS', pkg: '30ct Bottle' },
     teaching: { correctAction: 'verify', explanation: 'Azithromycin is a GOLD-recommended antibiotic for AECOPD with purulent sputum (Anthonisen Type I exacerbation). Short-course therapy (3-5 days) is appropriate. Procalcitonin 0.18 supports a possible bacterial trigger without confirming it.', guideline: GL }

@@ -58,7 +58,17 @@ export const DKA_EASY = [
         { id: 'r3', text: 'Long-acting insulin cannot be titrated for DKA management', correct: true },
         { id: 'r4', text: 'Dose is too high for this patient', correct: false },
         { id: 'r5', text: 'Glargine is contraindicated in type 1 diabetes', correct: false }
-      ], guideline: GL }
+      ], guideline: GL,
+      decisionTree: {
+        title: 'Clinical Reasoning: Insulin Route in DKA',
+        steps: [
+          { q: 'What type of insulin is ordered?', a: 'Long-acting SQ insulin (glargine)', icon: 'warn' },
+          { q: 'What does DKA management require?', a: 'Precise, titratable glucose control with IV regular insulin drip', icon: 'check' },
+          { q: 'Is SQ absorption reliable here?', a: 'No — dehydration and poor perfusion make SQ absorption erratic', icon: 'x' },
+          { q: 'Can glargine be titrated fast enough?', a: 'No — long-acting profile cannot be adjusted for rapidly changing needs', icon: 'x' }
+        ],
+        conclusion: 'REJECT. IV regular insulin drip is the ADA standard for acute DKA. SQ long-acting insulin is reserved for transition after anion gap closure.'
+      } }
   },
   { id: 'DKA_E2', patientId: 'D_DKA', orderId: '103601002', isNew: true, priority: 'Stat', timePending: '20m', drugName: 'potassium chloride 40 MEQ IVPB', orderLine: '40 mEq, IVPB, Over 1 hour', alerts: [], clinical: { dose: '40 mEq', route: 'IVPB', freq: 'Once', duration: '1 hour', rate: '40 mEq/hr', volume: '100 mL', priority: 'Stat', start: '04/07/2026 0700', stop: '' }, schedule: [{ date: '04/07', times: ['0700'] }], dispense: { from: 'ICU Pharmacy', firstDose: 'ICU Pharmacy', code: 'Unit Dose', triggered: true }, orderedBy: 'Martinez, Elena, MD', orderedDt: '04/07/2026 0650', product: { name: 'KCL 40MEQ/100ML IVPB', pkg: '100 mL Premix' },
     teaching: { correctAction: 'reject', explanation: 'Patient\'s K+ is 5.6 (hyperkalemic). Giving 40 mEq KCl now could cause fatal cardiac arrhythmias. Although total body potassium is depleted in DKA, the serum K+ must fall below 5.3 before replacement begins per ADA guidelines. K+ will drop rapidly once insulin is started. Additionally, 40 mEq/hr peripherally exceeds safe infusion rates (max 10-20 mEq/hr peripherally).',
@@ -87,7 +97,17 @@ export const DKA_MEDIUM = [
     teaching: { correctAction: 'verify', explanation: 'IV regular insulin at 0.14 units/kg/hr (without bolus) is an ADA-recommended regimen for DKA. The alternative is 0.1 units/kg/hr with a 0.1 units/kg IV bolus. Both approaches are acceptable. Continuous IV infusion allows precise titration, which is essential in DKA management.', guideline: GL }
   },
   { id: 'DKA_M2', patientId: 'D_DKA', orderId: '103602002', isNew: true, priority: 'Stat', timePending: '28m', drugName: 'sodium chloride 0.9% 1000 ML IV', orderLine: '1000 mL bolus, then 250 mL/hr', alerts: [], clinical: { dose: '1000 mL bolus then 250 mL/hr', route: 'IV', freq: 'Continuous', duration: '', rate: '250 mL/hr (after bolus)', volume: '1000 mL', priority: 'Stat', start: '04/07/2026 0700', stop: '' }, schedule: [{ date: '04/07', times: ['0700-cont'] }], dispense: { from: 'ICU Pharmacy', firstDose: 'Floor Stock', code: 'Floor Stock', triggered: false }, orderedBy: 'Martinez, Elena, MD', orderedDt: '04/07/2026 0648', product: { name: 'NaCl 0.9% 1000ML BAG', pkg: '1000 mL Bag' },
-    teaching: { correctAction: 'verify', explanation: 'Aggressive IV fluid resuscitation is critical in DKA. ADA recommends NS 15-20 mL/kg/hr (or 1-1.5L) in the first hour, then 250-500 mL/hr adjusted for hydration status. This order follows ADA protocol. Volume resuscitation improves insulin sensitivity and renal glucose clearance.', guideline: GL }
+    teaching: { correctAction: 'verify', explanation: 'Aggressive IV fluid resuscitation is critical in DKA. ADA recommends NS 15-20 mL/kg/hr (or 1-1.5L) in the first hour, then 250-500 mL/hr adjusted for hydration status. This order follows ADA protocol. Volume resuscitation improves insulin sensitivity and renal glucose clearance.', guideline: GL,
+      decisionTree: {
+        title: 'Clinical Reasoning: Fluid Resuscitation in DKA',
+        steps: [
+          { q: 'Is the patient volume depleted?', a: 'Yes — dry mucous membranes, poor skin turgor, HR 118, BP 98/62', icon: 'check' },
+          { q: 'What does ADA recommend initially?', a: '15–20 mL/kg (or 1–1.5 L) of isotonic crystalloid in the first hour', icon: 'check' },
+          { q: 'Is this order within that range?', a: 'Yes — 1 L bolus then 250 mL/hr maintenance', icon: 'check' },
+          { q: 'Any contraindication in this patient?', a: 'No — no overt CHF or significant cardiac comorbidity', icon: 'check' }
+        ],
+        conclusion: 'VERIFY. Order aligns with ADA DKA protocol. Monitor for volume overload and transition to D5-½NS when glucose < 250.'
+      } }
   },
   { id: 'DKA_M3', patientId: 'D_DKA', orderId: '103602003', isNew: true, priority: 'Routine', timePending: '1h 15m', drugName: 'potassium chloride 20 MEQ in NS 1000 ML', orderLine: '20 mEq/L, IV, When K < 5.3', alerts: [], clinical: { dose: '20 mEq/L', route: 'IV (in maintenance IVF)', freq: 'Continuous', duration: '', rate: 'Per IVF rate', volume: '1000 mL', priority: 'Routine', start: '04/07/2026 (when K < 5.3)', stop: '' }, schedule: [{ date: '04/07', times: ['Per protocol'] }], dispense: { from: 'ICU Pharmacy', firstDose: 'ICU Pharmacy', code: 'Unit Dose', triggered: false }, orderedBy: 'Martinez, Elena, MD', orderedDt: '04/07/2026 0650', product: { name: 'KCL 20MEQ/1000ML NS', pkg: '1000 mL Premix' },
     teaching: { correctAction: 'verify', explanation: 'Potassium replacement in DKA maintenance fluids is essential. Despite initial hyperkalemia (K 5.6), total body K is depleted. Insulin drives K intracellularly, causing rapid drops. ADA recommends adding 20-40 mEq KCl per liter of IVF when K falls below 5.3. Starting at 20 mEq/L is appropriate and safe.', guideline: GL }
