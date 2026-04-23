@@ -10,6 +10,7 @@
   import Landing from '$lib/components/Landing.svelte';
   import MetricsView from '$lib/components/MetricsView.svelte';
   import ClassManager from '$lib/components/ClassManager.svelte';
+  import CaseBuilder from '$lib/components/CaseBuilder.svelte';
   import Tutorial from '$lib/components/Tutorial.svelte';
 
   let showTutorial = $state(false);
@@ -47,6 +48,8 @@
         <MetricsView />
       {:else if $view === 'class'}
         <ClassManager />
+      {:else if $view === 'builder'}
+        <CaseBuilder />
       {/if}
     </div>
   </div>

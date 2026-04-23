@@ -59,6 +59,9 @@
     <button class="sb-btn" class:act={$view === 'class'} onclick={() => view.set('class')}>
       &#x1F3EB;<span class="tip">Class</span>
     </button>
+    <button class="sb-btn" class:act={$view === 'builder'} onclick={() => view.set('builder')}>
+      &#x1F3D7;<span class="tip">Case Builder</span>
+    </button>
   {/if}
   <div style="flex:1"></div>
   <button class="sb-btn" onclick={toggleTheme}>
